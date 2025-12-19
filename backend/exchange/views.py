@@ -6,8 +6,14 @@ from .models import Exchange
 import requests
 from datetime import datetime, timedelta  
 import os
+<<<<<<< HEAD
 import yfinance as yf
 import json
+=======
+import json
+import yfinance as yf
+from rest_framework.response import Response
+>>>>>>> 5cf508fd8d9cece40052e59f7255fc3fc0c27a0a
 
 BACKUP_FILE_PATH = os.path.join(settings.BASE_DIR, 'gold_silver_backup.json')
 
