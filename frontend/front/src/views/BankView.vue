@@ -808,6 +808,7 @@ const selectedCountry = ref('')
 const selectedBanks = ref([])
 const countries = ref([])    // 선택된 시/도에 따른 구/군 목록
 
+
 /* =========================================================
    2. 초기화 (onMounted)
    ========================================================= */
@@ -989,7 +990,7 @@ const drawRouteTo = async (place) => {
 
   try {
     // 🚨 주의: 브라우저 직접 호출 시 CORS 에러 발생 가능 (백엔드 프록시 권장)
-    const res = await axios.get('https://apis-navi.kakaomobility.com/v1/directions/', {
+    const res = await axios.get('https://apis-navi.kakaomobility.com/v1/directions', {
       params: { origin, destination, priority: 'RECOMMEND' },
       headers: { Authorization: `KakaoAK ${KAKAO_REST_KEY}` }
     })
