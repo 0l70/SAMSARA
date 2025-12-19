@@ -11,3 +11,4 @@ class Exchange(models.Model):
     ten_dd_efee_r = models.CharField(max_length=100) # 10일환가료율
     kftc_bkpr = models.CharField(max_length=100) # 서울외국환중개 매매기준율
     kftc_deal_bas_r = models.CharField(max_length=100) # 서울외국환중개 장부가격
+    search_date = models.DateField(null=True, blank=True) #7일간 데이터 보여주기 위해 날짜 저장할 필드
