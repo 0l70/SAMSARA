@@ -4,6 +4,12 @@ from rest_framework.decorators import api_view
 from .models import Exchange
 import requests
 from datetime import datetime, timedelta  
+import os
+import json
+import yfinance as yf
+from rest_framework.response import Response
+
+BACKUP_FILE_PATH = os.path.join(settings.BASE_DIR, 'gold_silver_backup.json')
 
 def update_exchange_rates():
     auth_key = settings.EXCHANGE_API_KEY
