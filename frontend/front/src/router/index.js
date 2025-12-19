@@ -11,6 +11,7 @@ import ArticleDetailView from '../views/ArticleDetailView.vue'
 // ▼▼▼ [추가] 1. 은행 찾기 뷰 불러오기
 import BankView from '../views/BankView.vue'
 import MyPageView from '@/views/MyPageView.vue'
+import GoldView from '../views/GoldView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,6 +66,11 @@ const router = createRouter({
       path: '/mypage',
       name: 'mypage',
       component: MyPageView
+    },
+    {
+      path: '/gold',
+      name: 'gold',
+      component: GoldView
     },
   ]
 })

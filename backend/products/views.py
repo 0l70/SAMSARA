@@ -13,7 +13,7 @@ api_key = os.getenv('FINANCE_API_KEY')
 print(f"API KEY Status: {api_key}")
 @api_view(['GET'])
 def save_deposit_products(request):
-    url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
+    url = f'http://finlife.fss.or.kr/finlifeapi/depositProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
     response = requests.get(url).json()
     
     base_list = response['result']['baseList']
@@ -46,7 +46,7 @@ def deposit_products(request):
 @api_view(['GET'])
 def save_saving_products(request):
     # 적금 API 주소 (deposit -> saving으로 변경됨)
-    url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={API_KEY}&topFinGrpNo=020000&pageNo=1'
+    url = f'http://finlife.fss.or.kr/finlifeapi/savingProductsSearch.json?auth={api_key}&topFinGrpNo=020000&pageNo=1'
     response = requests.get(url).json()
     
     base_list = response['result']['baseList']
@@ -74,3 +74,4 @@ def saving_products(request):
     products = SavingProducts.objects.all()
     serializer = SavingProductsSerializer(products, many=True)
     return Response(serializer.data)
+    
