@@ -3,10 +3,21 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from .models import Exchange
 import requests
-from datetime import datetime  # 👈 1. 이거 꼭 추가하세요!
+from datetime import datetime
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+import yfinance as yf
+import json
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
+BACKUP_FILE_PATH = os.path.join(settings.BASE_DIR, 'gold_silver_backup.json')
 
 def update_exchange_rates():
-    auth_key = "Md25ygA5zyqsMTkWFvwX3gQDyGUIWEls"
+    EXCHANGE_API_KEY = os.getenv('EXCHANGE_API_KEY')
     
     # 👇 2. 날짜를 "오늘"로 자동 설정하는 코드로 변경
     # (YYYYMMDD 형식으로 오늘 날짜를 문자열로 만듭니다)
@@ -14,7 +25,7 @@ def update_exchange_rates():
 
     # (참고: 주말이나 공휴일에는 데이터가 없어서 API가 빈 값을 줍니다.)
     
-    url = f"https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey={auth_key}&searchdate={search_date}&data=AP01"
+    url = f"https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey={EXCHANGE_API_KEY}&searchdate={search_date}&data=AP01"
 
     try:
         response = requests.get(url, verify=False)
@@ -73,3 +84,52 @@ def get_exchange_rates(request):
         })
 
     return JsonResponse(result, safe=False)
+
+@api_view(['GET'])
+def get_gold_silver_price(request):
+    print("✨ 금/은 시세 요청 들어옴!")
+    
+    try:
+        # 1. 야후 파이낸스에서 실시간 데이터 긁어오기 (최근 1달)
+        # 타임아웃 5초 설정 (5초 안에 답 없으면 에러로 간주)
+        gold = yf.Ticker("GC=F")
+        silver = yf.Ticker("SI=F")
+        
+        gold_hist = gold.history(period="1mo")
+        silver_hist = silver.history(period="1mo")
+
+        # 데이터가 비어있으면 에러 발생시키기 (백업본 쓰도록)
+        if gold_hist.empty or silver_hist.empty:
+            raise Exception("데이터가 비어있습니다.")
+
+        data = []
+        for date, row in gold_hist.iterrows():
+            date_str = date.strftime('%Y-%m-%d')
+            silver_price = 0
+            if date in silver_hist.index:
+                silver_price = silver_hist.loc[date]['Close']
+
+            data.append({
+                'date': date_str,
+                'gold': round(row['Close'], 2),
+                'silver': round(silver_price, 2)
+            })
+
+        # 2. 성공했으므로 JSON 파일에 백업(저장)해두기 💾
+        with open(BACKUP_FILE_PATH, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        
+        print("✅ 실시간 데이터 로딩 성공 (백업 완료)")
+        return Response(data)
+
+    except Exception as e:
+        # 3. 실패했을 경우 (인터넷 끊김, 야후 서버 다운 등) -> 백업 파일 읽기
+        print(f"❌ 실시간 로딩 실패! 백업 데이터를 사용합니다. (에러: {e})")
+        
+        if os.path.exists(BACKUP_FILE_PATH):
+            with open(BACKUP_FILE_PATH, 'r', encoding='utf-8') as f:
+                backup_data = json.load(f)
+            return Response(backup_data)
+        else:
+            # 백업 파일조차 없으면 빈 배열 리턴
+            return Response([])

@@ -26,6 +26,7 @@
       <div class="nav-right">
         <RouterLink :to="{ name: 'products' }" class="nav-item">금융상품 비교</RouterLink>
         <RouterLink :to="{ name: 'exchange' }" class="nav-item">환율 계산기</RouterLink>
+        <RouterLink :to="{ name: 'gold' }"class="nav-item">현물 시세</RouterLink>
         <RouterLink :to="{ name: 'BankView' }" class="nav-item">은행 찾기</RouterLink>
         <RouterLink :to="{ name: 'articles' }" class="nav-item">게시판</RouterLink>
       </div>
