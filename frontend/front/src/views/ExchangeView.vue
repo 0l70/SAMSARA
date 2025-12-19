@@ -65,13 +65,15 @@
         <div class="rate-info" v-if="selectedCurrency">
           <span class="info-icon"><b>※</b></span>
           적용 환율: 1 {{ selectedCurrency.unit }} = {{ selectedCurrency.rate.toLocaleString() }} 원
+          <br>
+          <span style="font-size:0.8em; color:#9ca3af;">({{ selectedCurrency.date }} 기준)</span>
         </div>
       </div>
 
       <div class="chart-card" v-if="selectedCurrency">
         <div class="chart-header">
           <h2>📉 {{ selectedCurrency.unit }} 최근 동향</h2>
-          <span class="badge">1주일</span>
+          <span class="badge">최근 7일</span>
         </div>
         <div class="chart-wrapper">
           <Line :data="chartData" :options="chartOptions" />
@@ -106,32 +108,75 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 // ---------------------------------------------------------
 // 상태 변수
 // ---------------------------------------------------------
-const currencies = ref([])
+const currencies = ref([])       // 계산기용 최신 데이터 (국가별 1개)
+const currencyHistory = ref({})  // 차트용 전체 데이터 (국가별 리스트)
 const selectedCurrency = ref(null)
 const inputAmount = ref(null)
 const isSwapped = ref(false)
 const loading = ref(true)
 
 // ---------------------------------------------------------
-// 1. API 데이터 가져오기
+// 1. [수정] API 데이터 가져오기 & 분류하기
 // ---------------------------------------------------------
 const fetchRates = async () => {
   try {
     loading.value = true
-    // ★ 주소 본인 설정에 맞게 유지 (api/v1 등)
     const response = await axios.get('http://127.0.0.1:8000/api/v1/exchange/exchange-rates/')
-    
-    const fetchedData = response.data.map(item => {
-      if (item.unit === 'JPY(100)') {
-        return { unit: 'JPY', name: '일본 엔화 (100엔)', rate: item.rate }
+    const rawData = response.data
+
+    // 1-1. 데이터 전처리 (JPY 100단위 처리 등)
+    const processedData = rawData.map(item => {
+      let unit = item.unit
+      let name = item.name
+      let rate = item.rate
+
+      // JPY(100) 등 100단위 통화 처리
+      if (unit.endsWith('(100)')) {
+        unit = unit.replace('(100)', '') // 'JPY(100)' -> 'JPY'
+        rate = rate / 100                // 900원 -> 9원 (1엔당)
+        name = name.replace('(100)', '') // 이름에서도 제거
       }
-      return item
+      
+      return {
+        date: item.search_date, // 백엔드에서 보낸 날짜
+        unit: unit,
+        name: name,
+        rate: rate
+      }
     })
 
-    const targetUnits = ['USD', 'JPY', 'EUR', 'CNY']
-    currencies.value = fetchedData.filter(c => targetUnits.includes(c.unit))
+    // 1-2. 데이터 분류 (최신 데이터 vs 히스토리 데이터)
+    const latestMap = new Map() // 각 통화별 최신 데이터 저장용
+    const historyMap = {}       // 각 통화별 전체 기록 저장용
 
-    // 기본값 USD 선택
+    processedData.forEach(item => {
+      // (1) 히스토리 그룹화
+      if (!historyMap[item.unit]) {
+        historyMap[item.unit] = []
+      }
+      historyMap[item.unit].push(item)
+
+      // (2) 최신 데이터 찾기 (날짜 비교)
+      if (!latestMap.has(item.unit)) {
+        latestMap.set(item.unit, item)
+      } else {
+        // 이미 저장된 것보다 현재 아이템이 더 최신이면 교체
+        const existing = latestMap.get(item.unit)
+        if (new Date(item.date) > new Date(existing.date)) {
+          latestMap.set(item.unit, item)
+        }
+      }
+    })
+
+    // 1-3. 상태 변수에 저장
+    currencyHistory.value = historyMap
+    
+    // 주요 통화만 필터링해서 드롭다운에 표시
+    const targetUnits = ['USD', 'JPY', 'EUR', 'CNY']
+    currencies.value = Array.from(latestMap.values())
+      .filter(c => targetUnits.includes(c.unit))
+
+    // 기본값 설정 (USD)
     const usd = currencies.value.find(c => c.unit === 'USD')
     if (usd) {
       selectedCurrency.value = usd
@@ -163,51 +208,40 @@ const toggleSwap = () => {
 const outputAmount = computed(() => {
   if (!inputAmount.value || !selectedCurrency.value) return 0
   const rate = selectedCurrency.value.rate
-  const unitRate = selectedCurrency.value.unit === 'JPY' ? rate / 100 : rate
-
+  
   let result = 0
   if (!isSwapped.value) {
-    result = inputAmount.value * unitRate
+    result = inputAmount.value * rate
     return Math.floor(result).toLocaleString()
   } else {
-    result = inputAmount.value / unitRate
+    result = inputAmount.value / rate
     return result.toFixed(2).toLocaleString()
   }
 })
 
 // ---------------------------------------------------------
-// 4. [수정됨] 차트 데이터 동적 생성
+// 4. [수정] 진짜 데이터로 차트 그리기
 // ---------------------------------------------------------
 const getChartData = () => {
-  // 데이터가 없으면 빈 차트
   if (!selectedCurrency.value) return { labels: [], datasets: [] }
 
-  const currentRate = selectedCurrency.value.rate
-  const today = new Date()
+  const unit = selectedCurrency.value.unit
+  // 해당 통화의 히스토리 가져오기
+  const history = currencyHistory.value[unit] || []
+
+  // 날짜 오름차순 정렬 (과거 -> 현재) 해야 그래프가 왼쪽에서 오른쪽으로 그려짐
+  // 백엔드에서 날짜순으로 안 올 수도 있으니 안전하게 정렬
+  const sortedHistory = [...history].sort((a, b) => new Date(a.date) - new Date(b.date))
+
+  // 라벨(날짜)과 데이터(환율) 추출
+  // 날짜 형식 예쁘게 변환 (2025-11-28 -> 11.28)
+  const labels = sortedHistory.map(item => {
+    if (!item.date) return ''
+    const dateObj = new Date(item.date)
+    return `${dateObj.getMonth() + 1}.${dateObj.getDate()}`
+  })
   
-  const labels = []
-  const dataPoints = []
-
-  // 최근 7일 데이터 생성 (과거 -> 오늘 순서)
-  for (let i = 6; i >= 0; i--) {
-    // 1. 날짜 라벨 생성 (예: 12.16)
-    const d = new Date()
-    d.setDate(today.getDate() - i)
-    const month = d.getMonth() + 1
-    const day = d.getDate()
-    labels.push(`${month}.${day}`)
-
-    // 2. 환율 데이터 생성
-    if (i === 0) {
-      // 오늘은 '실제 데이터' 사용
-      dataPoints.push(currentRate)
-    } else {
-      // 과거는 '실제 데이터 기반' 랜덤 변동 (±0.5% ~ ±1.5% 범위 내)
-      // 실제 서비스라면 여기서 DB의 과거 데이터를 가져와야 합니다.
-      const fluctuation = (Math.random() - 0.5) * (currentRate * 0.02) 
-      dataPoints.push(currentRate + fluctuation)
-    }
-  }
+  const dataPoints = sortedHistory.map(item => item.rate)
 
   const color = '#3b82f6'
 
@@ -223,7 +257,7 @@ const getChartData = () => {
       },
       borderColor: color,
       borderWidth: 3,
-      data: dataPoints, // 여기서 생성된 데이터 사용
+      data: dataPoints, // ★ 진짜 데이터 연결
       fill: true,
       tension: 0.4,
       pointRadius: 4,
@@ -247,10 +281,11 @@ const chartOptions = {
     },
     y: { 
       grid: { color: '#f3f4f6' }, 
-      // 차트 Y축 범위를 데이터에 맞춰서 자동 조절 (최소값 - 10원)
+      // Y축 범위 자동 조절 (데이터 최소값보다 조금 아래부터 시작)
       suggestedMin: (ctx) => {
         if(!ctx.chart.data.datasets.length) return 0;
-        return Math.min(...ctx.chart.data.datasets[0].data) - 10; 
+        const values = ctx.chart.data.datasets[0].data;
+        return Math.min(...values) - (Math.min(...values) * 0.005); // 최소값의 0.5% 아래 여유
       }
     }
   }
@@ -309,22 +344,21 @@ watch(selectedCurrency, (newVal) => {
 .result-text { color: #3b82f6; }
 .amount-input::-webkit-outer-spin-button, .amount-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-/* Swap 아이콘 수정 (클릭 가능하게) */
 .swap-icon-wrapper { position: relative; height: 20px; display: flex; justify-content: center; align-items: center; z-index: 2; }
 .swap-icon { 
   position: absolute; top: -18px; background: white; width: 40px; height: 40px; 
   border-radius: 50%; display: flex; justify-content: center; align-items: center; 
   font-size: 1.2rem; border: 3px solid #f5f7fa; color: #6b7280; 
-  cursor: pointer; /* 커서 모양 손가락으로 변경 */
+  cursor: pointer; 
   transition: transform 0.2s ease, background-color 0.2s;
 }
 .swap-icon:hover { transform: scale(1.1); background-color: #eff6ff; color: #3b82f6; border-color: #dbeafe; }
 .swap-icon:active { transform: scale(0.95); }
 
-.rate-info { margin-top: 25px; font-size: 0.9rem; color: #6b7280; display: flex; justify-content: center; align-items: center; gap: 5px; }
+.rate-info { margin-top: 25px; font-size: 0.9rem; color: #6b7280; }
 .info-icon { font-size: 1.1rem; }
 
-/* 차트 및 레이아웃 스타일 */
+/* 차트 레이아웃 */
 .dashboard-layout { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 1000px; align-items: center; }
 @media (min-width: 900px) {
   .dashboard-layout { flex-direction: row; align-items: stretch; }
