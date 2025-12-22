@@ -1,5 +1,6 @@
-// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
+
+// 1. 기존 뷰 Import
 import HomeView from '../views/HomeView.vue'
 import ProductView from '../views/ProductView.vue'
 import SignUpView from '../views/SignUpView.vue'
@@ -8,11 +9,15 @@ import ExchangeView from '../views/ExchangeView.vue'
 import ArticleView from '../views/ArticleView.vue'
 import ArticleCreateView from '../views/ArticleCreateView.vue'
 import ArticleDetailView from '../views/ArticleDetailView.vue'
-// ▼▼▼ [추가] 1. 은행 찾기 뷰 불러오기
+import ArticleUpdateView from '@/views/ArticleUpdateView.vue'
 import BankView from '../views/BankView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import GoldView from '../views/GoldView.vue'
-import ArticleUpdateView from '@/views/ArticleUpdateView.vue'
+
+// 2. [추가] 유튜브 관련 뷰 Import
+import YoutubeSearchView from '@/views/YoutubeSearchView.vue'
+// ⚠️ 중요: 아래 파일이 실제로 만들어져 있어야 에러가 안 납니다!
+import VideoDetailView from '@/views/VideoDetailView.vue' 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,10 +62,14 @@ const router = createRouter({
       name: 'article-detail',
       component: ArticleDetailView
     },
-    // ▼▼▼ [추가] 2. 은행 찾기 라우터 등록
+    {
+      path: '/articles/:id/edit',
+      name: 'article-update',
+      component: ArticleUpdateView
+    },
     {
       path: '/bank',
-      name: 'BankView', // 여기를 대문자로 바꾸면 App.vue를 안 고쳐도 됩니다.
+      name: 'BankView',
       component: BankView
     },
     {
@@ -73,16 +82,18 @@ const router = createRouter({
       name: 'gold',
       component: GoldView
     },
+    
+    // ▼▼▼ [유튜브 관련 라우터] ▼▼▼
     {
-      path: '/articles/:id/edit',
-      name: 'article-update',
-      component: ArticleUpdateView // 혹은 CreateView를 재사용한다면 ArticleCreateView
+      path: '/search',
+      name: 'youtube-search',
+      component: YoutubeSearchView
     },
     {
-      path: '/articles/:id/edit',
-      name: 'article-update',
-      component: ArticleUpdateView
-    },
+      path: '/video/:id',
+      name: 'video-detail',
+      component: VideoDetailView
+    }
   ]
 })
 
