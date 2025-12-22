@@ -12,6 +12,7 @@ import ArticleDetailView from '../views/ArticleDetailView.vue'
 import BankView from '../views/BankView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import GoldView from '../views/GoldView.vue'
+import ArticleUpdateView from '@/views/ArticleUpdateView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,6 +72,16 @@ const router = createRouter({
       path: '/gold',
       name: 'gold',
       component: GoldView
+    },
+    {
+      path: '/articles/:id/edit',
+      name: 'article-update',
+      component: ArticleUpdateView // 혹은 CreateView를 재사용한다면 ArticleCreateView
+    },
+    {
+      path: '/articles/:id/edit',
+      name: 'article-update',
+      component: ArticleUpdateView
     },
   ]
 })

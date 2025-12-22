@@ -18,7 +18,7 @@
 
     <nav class="main-nav">
       <div class="nav-left">
-        <RouterLink :to="{ name: 'articles' }" class="logo">
+        <RouterLink :to="{ name: 'home' }" class="logo">
           라고 할 때 살걸
         </RouterLink>
       </div>
