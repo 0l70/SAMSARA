@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'products',
     'exchange',
     'articles',
-
+    'chatbot',
+    
     # ... 기본 앱들
     'django.contrib.admin',
     'django.contrib.auth',
@@ -168,3 +169,4 @@ ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
 
 EXCHANGE_API_KEY = os.getenv('EXCHANGE_API_KEY')
 # FINANCE_API_KEY = os.getenv('FINANCE_API_KEY')
+OPENAI_API_KEY= os.getenv('OPENAI_API_KEY')
