@@ -13,6 +13,7 @@ import ArticleUpdateView from '@/views/ArticleUpdateView.vue'
 import BankView from '../views/BankView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import GoldView from '../views/GoldView.vue'
+import TestView from '../views/TestView.vue'
 
 // 2. [추가] 유튜브 관련 뷰 Import
 import YoutubeSearchView from '@/views/YoutubeSearchView.vue'
@@ -82,18 +83,11 @@ const router = createRouter({
       name: 'gold',
       component: GoldView
     },
-    
-    // ▼▼▼ [유튜브 관련 라우터] ▼▼▼
     {
-      path: '/search',
-      name: 'youtube-search',
-      component: YoutubeSearchView
+      path: '/test',
+      name: 'test',
+      component: TestView
     },
-    {
-      path: '/video/:id',
-      name: 'video-detail',
-      component: VideoDetailView
-    }
   ]
 })
 
