@@ -44,18 +44,22 @@
             <th width="10%">12개월</th>
             <th width="10%">24개월</th>
             <th width="10%">36개월</th>
-            <th width="15%" v-if="activeTab === 'deposit'">가입방법</th>
+            <th width="15%">가입방법</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="product in filteredProducts" :key="product.id">
+          <tr 
+            v-for="product in filteredProducts" 
+            :key="product.id" 
+            @click="goDetail(product)"
+          >
             <td class="bank-name">{{ product.kor_co_nm }}</td>
             <td class="product-name">{{ product.fin_prdt_nm }}</td>
             <td class="rate">{{ getInterestRate(product, 6) }}</td>
             <td class="rate highlight">{{ getInterestRate(product, 12) }}</td>
             <td class="rate">{{ getInterestRate(product, 24) }}</td>
             <td class="rate">{{ getInterestRate(product, 36) }}</td>
-            <td class="join-way" v-if="activeTab === 'deposit'">{{ product.join_way }}</td>
+            <td class="join-way">{{ product.join_way }}</td>
           </tr>
         </tbody>
       </table>
@@ -66,29 +70,28 @@
 <script setup>
 import { useFinanceStore } from '@/stores/finance'
 import { onMounted, ref, computed, watch } from 'vue'
+import { useRouter } from 'vue-router' // ★ 라우터 import
 
 const store = useFinanceStore()
-const selectedBank = ref('all')
-const activeTab = ref('deposit') // 현재 탭 상태 ('deposit' or 'saving')
+const router = useRouter() // ★ 라우터 사용 설정
 
-// 페이지 로드 시 둘 다 가져옴
+const selectedBank = ref('all')
+const activeTab = ref('deposit')
+
 onMounted(() => {
-  store.getProducts()        // 예금
-  store.getSavingProducts()  // 적금
+  store.getProducts()
+  store.getSavingProducts()
 })
 
-// 현재 탭에 따라 보여줄 전체 리스트 결정
 const currentProductList = computed(() => {
   return activeTab.value === 'deposit' ? store.products : store.savingProducts
 })
 
-// 은행 목록 필터용 (현재 보고 있는 리스트 기준)
 const bankList = computed(() => {
   const banks = currentProductList.value.map(p => p.kor_co_nm)
   return [...new Set(banks)]
 })
 
-// 최종 필터링된 상품 리스트
 const filteredProducts = computed(() => {
   let targetList = currentProductList.value
   
@@ -98,19 +101,26 @@ const filteredProducts = computed(() => {
   return targetList
 })
 
-// 탭이 바뀌면 은행 선택 초기화
 watch(activeTab, () => {
   selectedBank.value = 'all'
 })
 
 const getInterestRate = (product, term) => {
-  const option = product.options.find(opt => opt.save_trm === term)
+  // 옵션이 없을 경우 에러 방지 (?.)
+  const option = product.options?.find(opt => opt.save_trm === term)
   return option ? `${option.intr_rate}%` : '-'
+}
+
+// ▼ 핵심 수정: 상세 페이지 이동 함수
+const goDetail = (product) => {
+  router.push({
+    name: 'product-detail', // 라우터에 등록된 이름 (index.js 확인 필요)
+    params: { id: product.fin_prdt_cd } // 상품 코드 전달
+  })
 }
 </script>
 
 <style scoped>
-/* 기존 스타일 유지 + 탭 스타일 추가 */
 .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
 .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .bank-select { padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ddd; }
@@ -118,35 +128,35 @@ const getInterestRate = (product, term) => {
 table { width: 100%; border-collapse: collapse; background-color: white; text-align: center; }
 th { background-color: #f8f9fa; padding: 15px; border-bottom: 2px solid #ddd; white-space: nowrap; font-weight: bold; }
 td { padding: 15px; border-bottom: 1px solid #eee; color: #555; }
-tr:hover { background-color: #f1f8f5; }
+
+/* ▼ 핵심 수정: 마우스 올렸을 때 클릭 가능 표시 */
+tr { cursor: pointer; transition: background-color 0.2s; } 
+tr:hover { background-color: #e6f7ef; transform: scale(1.001); }
+
 .bank-name { font-weight: bold; color: #2c3e50; }
 .product-name { text-align: left; padding-left: 20px; }
 .highlight { color: #e74c3c; font-weight: bold; }
 
-/* ▼▼▼ 탭 버튼 스타일 */
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
+/* 탭 스타일 */
+.tabs { display: flex; gap: 10px; margin-bottom: 10px; }
 .tabs button {
   padding: 12px 30px;
   font-size: 16px;
   border: 1px solid #ddd;
   background-color: #f9f9f9;
   cursor: pointer;
-  border-radius: 8px 8px 0 0; /* 위쪽만 둥글게 */
+  border-radius: 8px 8px 0 0;
   color: #777;
   transition: all 0.3s;
   border-bottom: none;
 }
 .tabs button.active {
-  background-color: #42b983; /* 활성화 색상 */
+  background-color: #42b983;
   color: white;
   font-weight: bold;
   border-color: #42b983;
 }
-.tabs button:hover:not(.active) {
-  background-color: #eee;
-}
+.tabs button:hover:not(.active) { background-color: #eee; }
+
+.no-data { text-align: center; padding: 50px; color: #888; }
 </style>
