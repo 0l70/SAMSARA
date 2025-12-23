@@ -88,6 +88,17 @@ const router = createRouter({
       name: 'test',
       component: TestView
     },
+  // ▼▼▼ [유튜브 관련 라우터] ▼▼▼
+    {
+      path: '/search',
+      name: 'youtube-search',
+      component: YoutubeSearchView
+    },
+    {
+      path: '/video/:id',
+      name: 'video-detail',
+      component: VideoDetailView
+    },
   ]
 })
 

@@ -42,6 +42,7 @@
           <button class="nav-btn">
             투자/분석 <span class="arrow">▼</span>
           </button>
+          
           <div class="dropdown-menu">
             <RouterLink :to="{ name: 'exchange' }" class="dropdown-item">
               💱 환율 계산기
@@ -54,11 +55,11 @@
             </RouterLink>
           </div>
         </div>
-
+        <RouterLink :to="{ name: 'test' }" class="nav-item">💰금융성향테스트</RouterLink>
         <RouterLink :to="{ name: 'articles' }" class="nav-item single-link">
           게시판
         </RouterLink>
-
+        
       </div>
     </nav>
   </header>
