@@ -12,6 +12,7 @@ import ArticleDetailView from '../views/ArticleDetailView.vue'
 import BankView from '../views/BankView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import GoldView from '../views/GoldView.vue'
+import TestView from '../views/TestView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,6 +72,11 @@ const router = createRouter({
       path: '/gold',
       name: 'gold',
       component: GoldView
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: TestView
     },
   ]
 })
