@@ -8,18 +8,26 @@
     </div>
 
     <div class="chat-window" ref="chatWindow">
-      <div 
-        v-for="(msg, index) in messages" 
-        :key="index" 
-        :class="['message', msg.role]"
-      >
-        <div class="bubble">
-          <div v-if="msg.role === 'ai'" v-html="renderMarkdown(msg.content)"></div>
-          <div v-else>{{ msg.content }}</div>
+      <div v-for="(msg, index) in messages" :key="index">
+        
+        <div v-if="shouldShowDate(index)" class="date-divider">
+          <span>{{ formatDate(msg.created_at) }}</span>
+        </div>
+
+        <div :class="['message', msg.role]">
+          <div v-if="msg.role === 'ai'" class="profile-icon">🤖</div>
+
+          <div class="bubble">
+            <div v-if="msg.role === 'ai'" v-html="renderMarkdown(msg.content)"></div>
+            <div v-else>{{ msg.content }}</div>
+            
+            <span class="time-stamp">{{ formatTime(msg.created_at) }}</span>
+          </div>
         </div>
       </div>
 
       <div v-if="isLoading" class="message ai">
+        <div class="profile-icon">🤖</div>
         <div class="bubble loading">
           <span>.</span><span>.</span><span>.</span>
         </div>
@@ -45,22 +53,18 @@ import { ref, onMounted, computed, nextTick } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { marked } from 'marked' // 마크다운 변환기
-
+import { marked } from 'marked'
 
 const router = useRouter()
 const store = useAuthStore()
 
-const messages = ref([
-  { role: 'ai', content: '안녕하세요! 당신만을 위한 금융 비서 FinBot입니다. 무엇을 도와드릴까요?' }
-])
+// 초기값은 비워둡니다 (DB에서 가져올 거니까)
+const messages = ref([]) 
 const userInput = ref('')
 const isLoading = ref(false)
 const chatWindow = ref(null)
-const userInfo = ref(null) // 사용자 정보 저장용
+const userInfo = ref(null)
 
-
-// ★ MBTI 변환 사전
 const mbtiMap = {
   safe: '성실한 개미 🐜',
   neutral: '신중한 햄스터 🐹',
@@ -68,7 +72,6 @@ const mbtiMap = {
   aggressive: '용감한 사자 🦁'
 }
 
-// ★ 화면 표시용 이름 계산 (없으면 '진단 필요'라고 뜸)
 const mbtiLabel = computed(() => {
   if (userInfo.value && userInfo.value.mbti) {
     return mbtiMap[userInfo.value.mbti] || userInfo.value.mbti
@@ -76,12 +79,8 @@ const mbtiLabel = computed(() => {
   return '성향 미진단'
 })
 
-// 마크다운 렌더링 함수
-const renderMarkdown = (text) => {
-  return marked(text)
-}
+const renderMarkdown = (text) => marked(text)
 
-// 스크롤을 항상 바닥으로
 const scrollToBottom = async () => {
   await nextTick()
   if (chatWindow.value) {
@@ -89,7 +88,36 @@ const scrollToBottom = async () => {
   }
 }
 
-// 1. 입장 시 사용자 정보 확인 (MBTI 없으면 퇴장)
+// 📅 날짜 포맷팅 (2024년 12월 25일)
+const formatDate = (dateString) => {
+  if (!dateString) return '오늘' // 방금 보낸 메시지 등
+  const date = new Date(dateString)
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+}
+
+// 🕒 시간 포맷팅 (오후 3:40)
+const formatTime = (dateString) => {
+  if (!dateString) return new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+  return new Date(dateString).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+}
+
+// 날짜 구분선 표시 로직
+const shouldShowDate = (index) => {
+  // 첫 번째 메시지는 무조건 날짜 표시
+  if (index === 0) return true
+  
+  const currentMsgDate = messages.value[index].created_at
+  const prevMsgDate = messages.value[index - 1].created_at
+
+  // 날짜 정보가 없으면 패스
+  if (!currentMsgDate || !prevMsgDate) return false
+
+  // 날짜(일)가 달라졌으면 true
+  const curr = new Date(currentMsgDate).toDateString()
+  const prev = new Date(prevMsgDate).toDateString()
+  return curr !== prev
+}
+
 onMounted(async () => {
   if (!store.token) {
     alert('로그인이 필요합니다.')
@@ -98,71 +126,102 @@ onMounted(async () => {
   }
 
   try {
-    const res = await axios.get(`${store.API_URL}/api/v1/accounts/user/`, {
+    // 1. 사용자 정보 가져오기
+    const userRes = await axios.get(`${store.API_URL}/api/v1/accounts/user/`, {
       headers: { Authorization: `Token ${store.token}` }
     })
+    userInfo.value = userRes.data
     
-    userInfo.value = res.data
-
     if (!userInfo.value.mbti) {
       alert('맞춤 상담을 위해 금융 성향 테스트를 먼저 진행해주세요! 📝')
       router.push({ name: 'test' })
+      return
     }
+
+    // 2. ★ 대화 내역(History) DB에서 가져오기
+    const historyRes = await axios.get(`${store.API_URL}/api/v1/chatbot/history/`, {
+      headers: { Authorization: `Token ${store.token}` }
+    })
+
+    if (historyRes.data.length > 0) {
+      messages.value = historyRes.data
+    } else {
+      // 대화 내역이 없으면 기본 환영 메시지 (DB 저장 안 함, 화면에만 표시)
+      messages.value = [{ 
+        role: 'ai', 
+        content: '안녕하세요! 당신만을 위한 금융 비서 FinBot입니다. 무엇을 도와드릴까요?',
+        created_at: new Date().toISOString()
+      }]
+    }
+    
+    // 로딩 후 스크롤 내리기
+    scrollToBottom()
+
   } catch (err) {
     console.error(err)
     alert('정보를 불러오는 데 실패했습니다.')
   }
 })
 
-// 2. 메시지 전송
 const sendMessage = async () => {
   if (!userInput.value.trim()) return
 
-  // 사용자 메시지 추가
   const text = userInput.value
-  messages.value.push({ role: 'user', content: text })
+  
+  // 내 메시지 화면에 즉시 추가 (created_at은 현재 시간으로 임시 표시)
+  messages.value.push({ 
+    role: 'user', 
+    content: text,
+    created_at: new Date().toISOString() 
+  })
+  
   userInput.value = ''
   isLoading.value = true
   scrollToBottom()
 
   try {
-    // ★ 핵심 로직: 마이데이터 동의 여부에 따른 데이터 필터링
-    let payloadUserInfo = {};
-
+    // 마이데이터 동의 여부 payload 생성
+    let payloadUserInfo = {}
     if (userInfo.value.is_mydata_agreed) {
-      // [동의 함] 진짜 내 정보를 보냄
       payloadUserInfo = {
         age: userInfo.value.age,
         gender: userInfo.value.gender,
         job: userInfo.value.job,
         mbti: userInfo.value.mbti,
         income_source: userInfo.value.income_source
-      };
+      }
     } else {
-      // [동의 안 함] '비공개'라는 마커를 보냄
       payloadUserInfo = {
         age: '정보제공 미동의',
         gender: '정보제공 미동의',
         job: '정보제공 미동의',
         mbti: '정보제공 미동의',
         income_source: '정보제공 미동의'
-      };
+      }
     }
 
-    // 백엔드로 전송
+    // ★ 수정됨: history 배열을 보내지 않음 (백엔드가 DB에서 확인)
     const res = await axios.post(`${store.API_URL}/api/v1/chatbot/chat/`, {
       message: text,
-      user_info: payloadUserInfo // 위에서 만든 정보 전송
+      user_info: payloadUserInfo
     }, {
       headers: { Authorization: `Token ${store.token}` }
     })
 
-    // AI 응답 추가
-    messages.value.push({ role: 'ai', content: res.data.response })
+    // AI 응답 추가 (백엔드에서 오는 데이터 형식이 바뀌었을 수 있으니 확인)
+    messages.value.push({ 
+      role: 'ai', 
+      content: res.data.response,
+      created_at: new Date().toISOString() 
+    })
     
   } catch (err) {
     console.error(err)
-    messages.value.push({ role: 'ai', content: '죄송해요, 잠시 문제가 생겼어요. 다시 시도해주세요. 😥' })
+    messages.value.push({ 
+      role: 'ai', 
+      content: '죄송해요, 잠시 문제가 생겼어요. 다시 시도해주세요. 😥',
+      created_at: new Date().toISOString() 
+    })
   } finally {
     isLoading.value = false
     scrollToBottom()
@@ -171,6 +230,8 @@ const sendMessage = async () => {
 </script>
 
 <style scoped>
+/* 기존 스타일 유지 + 날짜/시간 스타일 추가 */
+
 .chat-container {
   max-width: 600px; margin: 30px auto; border: 1px solid #ddd; border-radius: 16px;
   overflow: hidden; display: flex; flex-direction: column; height: 80vh; background: #fff;
@@ -187,20 +248,41 @@ const sendMessage = async () => {
   flex: 1; padding: 20px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 15px;
 }
 
-.message { display: flex; }
+/* 프로필 아이콘 스타일 */
+.profile-icon {
+  width: 36px; height: 36px; background: #e0e7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 8px; flex-shrink: 0;
+}
+
+.message { display: flex; align-items: flex-start; margin-bottom: 5px;}
 .message.user { justify-content: flex-end; }
 .message.ai { justify-content: flex-start; }
 
 .bubble {
-  max-width: 70%; padding: 12px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; word-break: break-word;
+  max-width: 75%; padding: 12px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; word-break: break-word; position: relative;
 }
 .message.user .bubble { background: #3b82f6; color: white; border-bottom-right-radius: 2px; }
 .message.ai .bubble { background: white; color: #333; border: 1px solid #e5e7eb; border-bottom-left-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-/* 마크다운 스타일링 (v-html 내부) */
+/* 시간 표시 스타일 */
+.time-stamp {
+  font-size: 0.7rem; display: block; margin-top: 6px; text-align: right; opacity: 0.7;
+}
+.message.user .time-stamp { color: #e0f2fe; }
+.message.ai .time-stamp { color: #9ca3af; }
+
+/* 날짜 구분선 스타일 */
+.date-divider {
+  display: flex; align-items: center; justify-content: center; margin: 20px 0;
+}
+.date-divider span {
+  background: #e5e7eb; color: #4b5563; font-size: 0.75rem; padding: 4px 12px; border-radius: 12px; font-weight: 600;
+}
+
+/* 마크다운 스타일링 */
 :deep(.bubble ul) { margin: 5px 0 5px 20px; padding: 0; }
 :deep(.bubble li) { margin-bottom: 4px; }
-:deep(.bubble strong) { color: #2563eb; font-weight: 700; } /* 강조색 */
+:deep(.bubble strong) { color: #2563eb; font-weight: 700; }
+.message.user :deep(.bubble strong) { color: #dbeafe; } /* 유저 버블 안에서는 밝은색 강조 */
 
 .input-area {
   padding: 15px; border-top: 1px solid #eee; background: white; display: flex; gap: 10px;
