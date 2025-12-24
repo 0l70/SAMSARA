@@ -271,3 +271,8 @@ npm-debug.log
 yarn-error.log
 
 # End of https://www.toptal.com/developers/gitignore/api/django,python,vuejs
+
+chroma_db/
+backend/chroma_db/
+*.bin
+*.sqlite3

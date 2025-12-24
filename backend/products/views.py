@@ -6,10 +6,12 @@ from .serializers import DepositProductsSerializer, DepositOptionsSerializer, Sa
 import requests
 import os
 from dotenv import load_dotenv
+from chatbot.vector_db import build_vector_db
 
 load_dotenv() 
 
 api_key = os.getenv('FINANCE_API_KEY')
+
 print(f"API KEY Status: {api_key}")
 @api_view(['GET'])
 def save_deposit_products(request):
@@ -34,7 +36,9 @@ def save_deposit_products(request):
             if serializer.is_valid():
                 serializer.save(product=product)
 
-    return Response({"message": "데이터 저장 성공"})
+    build_vector_db()
+
+    return Response({"message": "예금 데이터 저장 및 챗봇 DB 업데이트 성공"})
 
 @api_view(['GET'])
 def deposit_products(request):
@@ -66,7 +70,9 @@ def save_saving_products(request):
             if serializer.is_valid(raise_exception=True):
                 serializer.save(product=product)
 
-    return Response({"message": "정기적금 데이터 저장 완료!"})
+    build_vector_db()
+
+    return Response({"message": "적금 데이터 저장 및 챗봇 DB 업데이트 성공"})
 
 # ▼▼▼ 적금 데이터 조회
 @api_view(['GET'])
