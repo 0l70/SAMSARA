@@ -1,102 +1,100 @@
 <template>
-  <div class="page">
-    <!-- HEADER -->
-    <header class="header">
-      <h1>은행 찾기</h1>
-      <p>지역과 은행을 선택해 주변 지점을 검색하세요</p>
-    </header>
+  <div class="page-container">
+    <div class="content-wrapper">
+      
+      <div class="header-section">
+        <div class="title-area">
+          <span class="sub-badge">MAP SERVICE</span>
+          <h1>주변 은행 찾기</h1>
+        </div>
+        <p class="desc">지역과 은행을 선택해 가까운 지점을 찾아보세요.</p>
+      </div>
 
-    <!-- FILTER -->
-    <section class="filter">
+      <section class="filter-card">
         <div class="filter-top">
-            <div class="select-group">
+          <div class="select-group">
             <select v-model="selectedCity" @change="onCityChange">
-                <option value="">시/도</option>
-                <option v-for="c in data.mapInfo" :key="c.name" :value="c.name">
+              <option value="">시/도 선택</option>
+              <option v-for="c in data.mapInfo" :key="c.name" :value="c.name">
                 {{ c.name }}
-                </option>
+              </option>
             </select>
 
             <select v-model="selectedCountry">
-                <option value="">구/군</option>
-                <option v-for="c in countries" :key="c">{{ c }}</option>
+              <option value="">구/군 선택</option>
+              <option v-for="c in countries" :key="c">{{ c }}</option>
             </select>
-            </div>
+          </div>
 
-            <button class="search" @click="searchByMultipleBanks">
-            검색
-            </button>
+          <button class="search-btn" @click="searchByMultipleBanks">
+            검색하기
+          </button>
         </div>
 
-        <hr class="divider"> <div class="banks-group">
-            <div class="banks">
+        <div class="divider"></div>
+
+        <div class="banks-group">
+          <div class="banks-label">은행 선택</div>
+          <div class="banks-grid">
             <button
-                v-for="bank in row1"
-                :key="bank"
-                :class="{ active: selectedBanks.includes(bank) }"
-                @click="toggleBank(bank)"
+              v-for="bank in data.bankInfo"
+              :key="bank"
+              class="bank-chip"
+              :class="{ active: selectedBanks.includes(bank) }"
+              @click="toggleBank(bank)"
             >
-                {{ bank }}
+              {{ bank }}
             </button>
-            </div>
-            <div class="banks">
-            <button
-                v-for="bank in row2"
-                :key="bank"
-                :class="{ active: selectedBanks.includes(bank) }"
-                @click="toggleBank(bank)"
-            >
-                {{ bank }}
-            </button>
-            </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- CONTENT -->
-    <main class="content">
-      <!-- MAP -->
-      <div class="map-wrap">
-        <div id="map" class="map"></div>
-        <button class="loc-btn" @click="findMyLocation(true)">📍</button>
-      </div>
-
-      <!-- LIST -->
-      <aside class="list">
-        <h3>
-          검색 결과 {{ places.length }}
-          <span v-if="isLoading">· 검색중</span>
-        </h3>
-
-        <div v-if="!places.length && !isLoading" class="empty">
-          조건을 선택하고 검색하세요
+      <main class="content-grid">
+        <div class="map-wrapper">
+          <div id="map" class="map"></div>
+          <button class="loc-btn" @click="findMyLocation(true)" title="내 위치">
+            📍
+          </button>
         </div>
 
-        <ul v-else>
-          <li
-            v-for="(p, i) in places"
-            :key="p.id"
-            @click="selectPlace(p)"
-          >
-            <div class="title">
-              <span class="idx">{{ i + 1 }}</span>
-              {{ p.place_name }}
-            </div>
+        <aside class="list-wrapper">
+          <div class="list-header">
+            <h3>검색 결과 <span class="count">{{ places.length }}</span></h3>
+            <span v-if="isLoading" class="loading-text">· 검색중...</span>
+          </div>
 
-            <div class="addr">{{ p.address_name }}</div>
+          <div v-if="!places.length && !isLoading" class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>조건을 선택하고 검색해주세요</p>
+          </div>
 
-            <div v-if="p.phone" class="phone">
-              ☎ {{ p.phone }}
-            </div>
+          <ul v-else class="place-list">
+            <li
+              v-for="(p, i) in places"
+              :key="p.id"
+              class="place-item"
+              @click="selectPlace(p)"
+            >
+              <div class="place-info">
+                <div class="place-title">
+                  <span class="idx">{{ i + 1 }}</span>
+                  {{ p.place_name }}
+                </div>
+                <div class="place-addr">{{ p.address_name }}</div>
+                <div v-if="p.phone" class="place-phone">{{ p.phone }}</div>
+              </div>
 
-            <div class="actions">
-              <button class="route-btn" @click.stop="drawRouteTo(p)">
-              경로 보기
-              </button>
-            </div>
-          </li>
-        </ul>
-      </aside>
-    </main>
+              <div class="place-action">
+                <button class="route-btn" @click.stop="drawRouteTo(p)">
+                  길찾기 ➔
+                </button>
+              </div>
+            </li>
+          </ul>
+        </aside>
+      </main>
+
+    </div>
   </div>
 </template>
 
@@ -810,7 +808,7 @@ const countries = ref([])    // 선택된 시/도에 따른 구/군 목록
 
 
 /* =========================================================
-   2. 초기화 (onMounted)
+  2. 초기화 (onMounted)
    ========================================================= */
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
@@ -839,7 +837,7 @@ const initMap = () => {
 
 
 /* =========================================================
-   3. 검색 및 필터 로직
+  3. 검색 및 필터 로직
    ========================================================= */
 // 시/도 변경 시 구/군 목록 업데이트 (🚨 질문하신 부분 해결!)
 const onCityChange = () => {
@@ -937,7 +935,7 @@ const setBounds = (data) => {
 
 
 /* =========================================================
-   4. 위치 및 경로(Route) 로직
+  4. 위치 및 경로(Route) 로직
    ========================================================= */
 // 내 위치 찾기
 const findMyLocation = (moveMap = true) => {
@@ -1044,200 +1042,334 @@ const drawRouteTo = async (place) => {
     alert("경로를 불러오지 못했습니다 (키 확인/CORS)")
   }
 }
-
 </script>
 
 <style scoped>
 /* =====================
-  기본 레이아웃
+  1. 전체 레이아웃 (변수 적용)
 ===================== */
-.page {
+.page-container {
+  /* 배경색 변수 적용 */
+  background-color: var(--bg-body);
+  min-height: 100vh;
+  padding: 40px 20px;
+  transition: background-color 0.3s ease;
+}
+
+.content-wrapper {
   max-width: 1280px;
-  margin: auto;
-  padding: 24px;
-  background: #f8fafc;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0 auto;
 }
 
-.header { margin-bottom: 20px; }
-.header h1 { font-size: 1.5rem; font-weight: 700; }
-.header p { margin-top: 4px; color: #6b7280; font-size: 0.95rem; }
+/* =====================
+  2. 헤더 섹션
+===================== */
+.header-section {
+  text-align: left;
+  margin-bottom: 40px;
+}
+
+.sub-badge {
+  display: inline-block;
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.title-area h1 {
+  font-size: 32px;
+  font-weight: 800;
+  /* 텍스트 색상 변수 적용 */
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.desc {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin: 0;
+}
 
 /* =====================
-   검색 필터 (상단)
+  3. 필터 카드 (다크모드 대응)
 ===================== */
-/* =====================
-   FILTER (레이아웃 수정됨)
-===================== */
-.filter {
-  margin-bottom: 20px;
-  padding: 16px 20px;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-  
-  /* 핵심: 전체를 세로로 쌓음 */
+.filter-card {
+  background: var(--bg-card);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 2px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  margin-bottom: 24px;
   display: flex;
-  flex-direction: column; 
-  gap: 16px; 
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* 1. 윗줄 스타일 (좌측: 셀렉트박스 / 우측: 검색버튼) */
 .filter-top {
   display: flex;
-  justify-content: space-between; /* 양쪽 끝으로 벌림 */
+  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  gap: 16px;
 }
 
 .select-group {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  flex: 1;
 }
 
-.filter select {
-  height: 40px;
-  padding: 0 14px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
-  font-size: 0.9rem;
-  min-width: 120px;
+.filter-card select {
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  font-size: 15px;
+  color: var(--text-primary);
+  min-width: 140px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-/* 구분선 스타일 */
-.divider {
+.filter-card select:focus {
+  border-color: var(--primary-color);
+}
+
+.search-btn {
+  height: 48px;
+  padding: 0 32px;
+  border-radius: 12px;
+  /* 버튼은 아까 맞춘 톤다운 블루 적용 */
+  background-color: #4a86e8;
+  color: white;
   border: none;
-  border-top: 1px solid #f1f5f9;
-  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(74, 134, 232, 0.2);
+}
+
+/* 검색 버튼 다크모드 전용 */
+:global([data-theme="dark"]) .search-btn {
+  background-color: #14428b;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.search-btn:hover {
+  filter: brightness(0.9);
+  transform: translateY(-2px);
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
   width: 100%;
 }
 
-/* 2. 아랫줄 은행 그룹 (기존 유지 + 너비 100%) */
 .banks-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%; /* 전체 너비 사용 */
+  gap: 12px;
 }
 
-/* 은행 버튼 감싸는 줄 */
-.banks {
+.banks-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.banks-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* 은행 버튼 (기존 디자인 유지) */
-.banks button {
-  padding: 7px 14px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  color: #374151;
-  font-size: 0.85rem;
+.bank-chip {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  white-space: nowrap;
+  transition: all 0.2s;
 }
 
-.banks button.active {
-  background: #3182f6;
-  color: #fff;
-  border-color: #3182f6;
-  font-weight: 600;
+.bank-chip:hover {
+  background-color: var(--bg-hover);
 }
 
-/* 검색 버튼 */
-.search {
-  height: 40px;
-  padding: 0 24px;
-  border-radius: 10px;
-  background: #3182f6;
-  color: #fff;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.95rem;
+.bank-chip.active {
+  background-color: var(--bg-badge);
+  color: #4a86e8;
+  border-color: #4a86e8;
+  font-weight: 700;
 }
-.search:hover { background: #3666e9; }
+
 /* =====================
-   ✨ 메인 컨텐츠 (지도 + 리스트) ✨
-   이 부분이 깨져서 리스트가 안 보였던 것입니다.
+  4. 컨텐츠 (지도 + 리스트)
 ===================== */
-.content {
-  display: flex;       /* 가로 배치 핵심! */
-  gap: 20px;           /* 지도와 리스트 사이 간격 */
-  height: 620px;       /* 전체 높이 고정 */
+.content-grid {
+  display: flex;
+  gap: 24px;
+  height: 640px;
 }
 
-/* [왼쪽] 지도 영역 */
-.map-wrap {
-  flex: 2;             /* 2/3 공간 차지 */
-  position: relative;  /* 버튼 위치 기준점 */
-  border-radius: 16px;
+.map-wrapper {
+  flex: 2;
+  position: relative;
+  border-radius: 24px;
   overflow: hidden;
+  box-shadow: 0 2px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
 }
 
-.map {
-  width: 100%;
-  height: 100%;
-}
+.map { width: 100%; height: 100%; }
 
-/* [오른쪽] 리스트 영역 */
-.list {
-  flex: 1;             /* 1/3 공간 차지 */
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px;
-  overflow-y: auto;    /* 스크롤 생성 */
-  border: 1px solid #e5e7eb;
-}
-
-/* =====================
-   내 위치 찾기 버튼 (지도 위)
-===================== */
 .loc-btn {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 20;
-  width: 40px;
-  height: 40px;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 20px; right: 20px; z-index: 20;
+  width: 44px; height: 44px;
+  background: var(--bg-card); 
+  border: 1px solid var(--border-color); 
+  border-radius: 12px;
+  cursor: pointer; font-size: 20px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-primary);
 }
-.loc-btn:hover { background-color: #f3f4f6; }
+.loc-btn:hover { background-color: var(--bg-hover); }
+
+.list-wrapper {
+  flex: 1;
+  background: var(--bg-card);
+  border-radius: 24px;
+  padding: 24px;
+  overflow-y: auto;
+  box-shadow: 0 2px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  display: flex; flex-direction: column;
+}
+
+.list-header h3 {
+  font-size: 18px; font-weight: 800; color: var(--text-primary); margin-bottom: 20px;
+}
+
+.count { color: #4a86e8; }
+.loading-text { font-size: 14px; color: var(--text-muted); font-weight: normal; }
+
+.place-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.place-item {
+  padding: 16px; border-radius: 16px;
+  background-color: var(--bg-card); 
+  border: 1px solid var(--border-color);
+  cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  transition: all 0.2s;
+}
+
+.place-item:hover {
+  background-color: var(--bg-hover);
+  border-color: #4a86e8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.place-info { flex: 1; }
+
+.place-title {
+  font-size: 16px; font-weight: 700; color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+
+.idx {
+  width: 20px; height: 20px; background: #4a86e8; color: white;
+  border-radius: 50%; font-size: 11px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.place-addr { font-size: 13px; color: var(--text-secondary); margin-left: 28px; }
+.place-phone { font-size: 13px; color: #4a86e8; margin-left: 28px; margin-top: 2px; }
+
+.route-btn {
+  padding: 6px 12px; border-radius: 8px; background-color: var(--bg-badge);
+  color: #4a86e8; border: none; font-size: 12px; font-weight: 700; cursor: pointer;
+  white-space: nowrap;
+}
+.route-btn:hover { filter: brightness(0.95); }
+
+.empty-state {
+  margin-top: auto; margin-bottom: auto;
+  text-align: center; color: var(--text-muted);
+}
+.empty-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
+
+/* 스크롤바 커스텀 */
+.list-wrapper::-webkit-scrollbar { width: 6px; }
+.list-wrapper::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 3px; }
 
 /* =====================
-  리스트 아이템 스타일
+  5. 지도 커스텀 오버레이 (다크모드 강제 적용 필요)
 ===================== */
-.list ul { list-style: none; padding: 0; margin: 0; }
-.list li { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
-.list li:hover { background-color: #f8fafc; }
-
-.title { display: flex; gap: 8px; font-weight: 600; font-size: 0.95rem; }
-.idx {
-  width: 20px; height: 20px; background: #3182f6; color: #fff;
-  border-radius: 50%; font-size: 0.7rem;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+.custom-overlay-style {
+  position: relative;
+  bottom: 45px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  display: inline-block; 
+  white-space: nowrap;
+  text-align: center;
 }
-.addr { margin-top: 4px; font-size: 0.8rem; color: #6b7280; margin-left: 28px; }
-.phone { margin-top: 4px; font-size: 1.0rem; margin-left: 28px; }
 
-.actions { margin-top: 8px; display: flex; gap: 6px; margin-left: 28px; }
-.actions button {
-  font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: none; color: #fff; cursor: pointer;
+.custom-overlay-style .title {
+  display: block;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 5px;
 }
-.actions button:first-child { background: #f59e0b; }
-.actions button:last-child { background: #3182f6; }
 
-.empty { margin-top: 60px; text-align: center; color: #9ca3af; }
+.custom-overlay-style .info {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* 말풍선 꼬리 */
+.custom-overlay-style::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 8px 0;
+  border-style: solid;
+  border-color: var(--bg-card) transparent transparent transparent;
+  z-index: 1;
+}
+
+.custom-overlay-style::before {
+  content: "";
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 8px 0;
+  border-style: solid;
+  border-color: var(--border-color) transparent transparent transparent;
+  z-index: 0;
+}
 </style>

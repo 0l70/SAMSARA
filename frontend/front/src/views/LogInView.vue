@@ -71,23 +71,29 @@ const submitForm = async function () {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh; /* 화면 높이의 80% 정도 차지하게 */
-  background-color: #f8f9fa; /* 아주 연한 회색 배경 */
+  min-height: 80vh; 
+  /* 라이트: #f8f9fa, 다크: var(--bg-body) */
+  background-color: var(--bg-body); 
+  transition: background-color 0.3s ease;
 }
 
 /* 로그인 카드 디자인 */
 .auth-card {
   width: 100%;
-  max-width: 400px; /* 너무 넓어지지 않게 제한 */
-  background-color: white;
+  max-width: 400px;
+  /* 라이트: white, 다크: var(--bg-card) */
+  background-color: var(--bg-card);
   padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+  /* 라이트: 부드러운 그림자, 다크: 진한 그림자 */
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border: 1px solid var(--border-color); /* 다크모드 경계 구분용 */
 }
 
 h1 {
   text-align: center;
-  color: #333;
+  /* 라이트: #333, 다크: var(--text-primary) */
+  color: var(--text-primary);
   margin-bottom: 30px;
   font-size: 24px;
 }
@@ -101,31 +107,40 @@ label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
-  color: #555;
+  /* 라이트: #555, 다크: var(--text-secondary) */
+  color: var(--text-secondary);
 }
 
 input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  /* 라이트: #ddd, 다크: var(--border-color) */
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   font-size: 16px;
-  box-sizing: border-box; /* 패딩 포함 크기 계산 */
-  transition: border-color 0.3s;
+  box-sizing: border-box;
+  /* 다크모드 배경색 및 글자색 대응 */
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  transition: all 0.3s;
 }
 
 /* 입력창 클릭했을 때 초록색 테두리 */
 input:focus {
-  border-color: #42b983;
+  border-color: #2563eb;
   outline: none;
   box-shadow: 0 0 0 3px rgba(66, 185, 131, 0.1);
+}
+
+input::placeholder {
+  color: var(--text-muted);
 }
 
 /* 로그인 버튼 */
 .btn-submit {
   width: 100%;
   padding: 14px;
-  background-color: #42b983;
+  background-color: #3b82f6;
   color: white;
   border: none;
   border-radius: 6px;
@@ -137,6 +152,6 @@ input:focus {
 }
 
 .btn-submit:hover {
-  background-color: #3aa876; /* 호버 시 약간 진하게 */
+  background-color: #3b82f6;
 }
 </style>

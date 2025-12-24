@@ -1,10 +1,15 @@
 <template>
-  <div class="page-bg">
-    <div class="board-container">
+  <div class="page-container">
+    <div class="board-wrapper">
+      
       <div class="header-group">
-        <h1>자유 게시판</h1>
+        <div class="text-group">
+          <span class="badge">Community</span>
+          <h1>자유 게시판</h1>
+          <p class="subtitle">다양한 금융 이야기를 자유롭게 나눠보세요.</p>
+        </div>
         <a href="#" class="btn-create" @click.prevent="goCreateArticle">
-          글쓰기
+          ✏️ 글쓰기
         </a>
       </div>
 
@@ -12,9 +17,9 @@
         <table class="article-table">
           <thead>
             <tr>
-              <th width="10%">번호</th>
-              <th width="50%">제목</th>
-              <th width="20%">작성자</th>
+              <th width="8%">번호</th>
+              <th width="55%">제목</th>
+              <th width="17%">작성자</th>
               <th width="20%">작성일</th>
             </tr>
           </thead>
@@ -32,8 +37,9 @@
           </tbody>
         </table>
         
-        <div v-if="store.articles.length === 0" class="empty-state">
-          작성된 게시글이 없습니다.
+        <div v-if="store.articles && store.articles.length === 0" class="empty-state">
+          <div class="empty-icon">📝</div>
+          <p>아직 작성된 게시글이 없습니다.<br>첫 번째 글의 주인공이 되어보세요!</p>
         </div>
       </div>
 
@@ -44,15 +50,14 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useArticleStore } from '@/stores/article'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth' 
 
 const store = useArticleStore()
-const router = useRouter()
 const authStore = useAuthStore() 
+const router = useRouter()
 
 const goCreateArticle = () => {
-  console.log('현재 토큰:', authStore.token)
   if (authStore.token) {
     router.push({ name: 'article-create' }) 
   } else {
@@ -67,43 +72,138 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.page-bg { background-color: #f2f4f6; min-height: 100vh; padding: 40px 20px; }
-.board-container { max-width: 900px; margin: 0 auto; }
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
 
-/* 헤더 & 글쓰기 버튼 */
-.header-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.header-group h1 { font-size: 26px; font-weight: 700; color: #191f28; margin: 0; }
-.btn-create { 
-  background-color: #3182f6; color: white; padding: 12px 20px; 
-  text-decoration: none; border-radius: 12px; font-weight: 600; 
-  cursor: pointer; transition: background-color 0.2s; font-size: 15px;
+.page-container {
+  background-color: var(--bg-body);
+  min-height: 100vh;
+  padding: 60px 20px;
+  font-family: 'Pretendard', sans-serif;
+  transition: background-color 0.3s ease;
 }
-.btn-create:hover { background-color: #1b64da; }
 
-/* 테이블 카드 디자인 */
-.table-card { background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; }
+.board-wrapper { max-width: 1000px; margin: 0 auto; }
+
+.header-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.text-group { display: flex; flex-direction: column; }
+
+.badge {
+  background-color: var(--bg-badge);
+  /* 라이트 모드 뱃지 색상 */
+  color: #4a86e8;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  width: fit-content;
+}
+
+.header-group h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 5px 0;
+  letter-spacing: -1px;
+}
+
+.subtitle { color: var(--text-secondary); font-size: 1rem; margin: 0; }
+
+/* 라이트 모드(기본) 버튼 색상 */
+.btn-create {
+  background-color: #4a86e8; 
+  color: white;
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 10px rgba(74, 134, 232, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-create:hover {
+  filter: brightness(0.9);
+  transform: translateY(-2px);
+}
+
+.table-card {
+  background: var(--bg-card);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
 
 .article-table { width: 100%; border-collapse: collapse; }
-.article-table th { 
-  background-color: #f9fafb; 
-  padding: 16px; 
-  text-align: center; 
-  color: #8b95a1; 
-  font-weight: 600; 
-  font-size: 14px;
-  border-bottom: 1px solid #e5e8eb;
-}
-.article-table td { padding: 18px 16px; border-bottom: 1px solid #f2f4f6; text-align: center; color: #4e5968; font-size: 15px; }
 
-.data-row:hover { background-color: #f8fbff; } /* 마우스 오버 시 연한 파랑 */
+.article-table th {
+  background-color: var(--bg-body); 
+  padding: 18px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.article-table td {
+  padding: 20px 18px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.data-row { transition: background-color 0.2s; }
+.data-row:hover { background-color: var(--bg-hover); }
 .data-row:last-child td { border-bottom: none; }
 
-.col-id { color: #8b95a1; }
-.col-title { text-align: left !important; padding-left: 20px; font-weight: 600; }
-.col-title a { text-decoration: none; color: #333d4b; display: block; }
-.col-title a:hover { color: #3182f6; }
-.col-author { color: #4e5968; }
-.col-date { color: #8b95a1; font-size: 14px; }
+.col-id { color: var(--text-muted); font-weight: 500; }
+.col-title { text-align: left !important; padding-left: 30px; }
+.col-title a {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.05rem;
+  display: block;
+  transition: color 0.2s;
+}
+.col-title a:hover { color: #4a86e8; } 
 
-.empty-state { text-align: center; padding: 60px; color: #8b95a1; font-size: 15px; }
+.col-author { color: var(--text-secondary); font-weight: 500; }
+.col-date { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 0; }
+.empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+.empty-icon { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
+</style>
+
+<style>
+/* scoped가 없으므로 Vue의 내부 ID와 상관없이 전역적으로 적용됩니다.
+  !important를 붙여서 확실하게 색상을 덮어씁니다.
+*/
+[data-theme="dark"] .btn-create {
+  background-color: #14428b !important; /* 차분한 네이비 */
+  color: #e8eaed !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 뱃지 다크모드 색상 */
+[data-theme="dark"] .badge {
+  color: #6baaf7 !important;
+}
+
+/* 제목 링크 호버 시 다크모드 색상 */
+[data-theme="dark"] .col-title a:hover {
+  color: #6baaf7 !important;
+}
 </style>

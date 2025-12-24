@@ -126,33 +126,158 @@ const handleResultAction = async () => {
 </script>
 
 <style scoped>
-/* 기존 스타일 유지 */
-.test-container { max-width: 500px; margin: 50px auto; padding: 40px 30px; background: white; border-radius: 24px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+/* =====================
+  1. 전체 컨테이너 및 배경
+===================== */
+.test-container { 
+  max-width: 500px; 
+  margin: 50px auto; 
+  padding: 40px 30px; 
+  /* 라이트: white, 다크: var(--bg-card) */
+  background: var(--bg-card); 
+  border-radius: 24px; 
+  text-align: center; 
+  /* 다크모드에서 그림자는 더 깊고 진하게 */
+  box-shadow: 0 10px 25px var(--shadow-color); 
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+/* =====================
+  2. 인트로 및 텍스트 스타일
+===================== */
 .intro-slide .icon { font-size: 80px; margin-bottom: 20px; }
-.intro-slide h1 { font-size: 1.8rem; font-weight: 800; color: #333; margin-bottom: 10px; }
-.intro-slide p { color: #666; margin-bottom: 40px; line-height: 1.6; }
-.start-btn { width: 100%; padding: 16px; font-size: 1.2rem; font-weight: 700; background: #3b82f6; color: white; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
-.start-btn:hover { background: #2563eb; }
-.progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 15px; overflow: hidden; }
+.intro-slide h1 { 
+  font-size: 1.8rem; 
+  font-weight: 800; 
+  color: var(--text-primary); /* #333 -> 변수 */
+  margin-bottom: 10px; 
+}
+.intro-slide p { 
+  color: var(--text-secondary); /* #666 -> 변수 */
+  margin-bottom: 40px; 
+  line-height: 1.6; 
+}
+
+/* =====================
+  3. 진행바 및 질문 영역
+===================== */
+.progress-bar { 
+  width: 100%; 
+  height: 8px; 
+  background: var(--border-color); /* #eee -> 변수 */
+  border-radius: 4px; 
+  margin-bottom: 15px; 
+  overflow: hidden; 
+}
 .fill { height: 100%; background: #3b82f6; transition: width 0.3s ease; }
-.step-count { font-size: 0.9rem; color: #999; font-weight: 600; }
-.question-text { font-size: 1.4rem; font-weight: 700; color: #222; margin: 30px 0 50px; line-height: 1.4; word-break: keep-all;}
+.step-count { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
+
+.question-text { 
+  font-size: 1.4rem; 
+  font-weight: 700; 
+  color: var(--text-primary); /* #222 -> 변수 */
+  margin: 30px 0 50px; 
+  line-height: 1.4; 
+  word-break: keep-all;
+}
+
+/* =====================
+  4. 선택지 버튼 (디자인 유지 + 다크 대응)
+===================== */
 .choices { display: flex; flex-direction: column; gap: 15px; }
-.choice-btn { padding: 20px; border: 2px solid #e5e7eb; border-radius: 16px; background: white; font-size: 1rem; color: #4b5563; cursor: pointer; text-align: left; transition: all 0.2s; display: flex; align-items: center; }
-.choice-btn:hover { border-color: #3b82f6; background: #eff6ff; color: #3b82f6; }
-.choice-btn .label { display: inline-flex; width: 28px; height: 28px; background: #e5e7eb; color: #666; border-radius: 50%; font-size: 0.8rem; font-weight: bold; justify-content: center; align-items: center; margin-right: 12px; }
+.choice-btn { 
+  padding: 20px; 
+  border: 2px solid var(--border-color); /* #e5e7eb -> 변수 */
+  border-radius: 16px; 
+  background: var(--bg-card); 
+  font-size: 1rem; 
+  color: var(--text-secondary); /* #4b5563 -> 변수 */
+  cursor: pointer; 
+  text-align: left; 
+  transition: all 0.2s; 
+  display: flex; 
+  align-items: center; 
+}
+
+.choice-btn:hover { 
+  border-color: #3b82f6; 
+  background: var(--bg-badge); /* 다크모드 호버 배경 */
+  color: #3b82f6; 
+}
+
+.choice-btn .label { 
+  display: inline-flex; 
+  width: 28px; 
+  height: 28px; 
+  background: var(--border-color); 
+  color: var(--text-muted); 
+  border-radius: 50%; 
+  font-size: 0.8rem; 
+  font-weight: bold; 
+  justify-content: center; 
+  align-items: center; 
+  margin-right: 12px; 
+}
 .choice-btn:hover .label { background: #3b82f6; color: white; }
-.subtitle { color: #666; font-size: 1rem; margin-bottom: 10px; }
+
+/* =====================
+  5. 결과 페이지 요소
+===================== */
+.subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 10px; }
 .result-icon { font-size: 80px; margin-bottom: 10px; }
 .result-title { font-size: 2rem; font-weight: 900; color: #3b82f6; margin-bottom: 20px; }
-.result-desc { color: #4b5563; line-height: 1.6; margin-bottom: 30px; word-break: keep-all; }
-.recommend-box { background: #f3f4f6; padding: 20px; border-radius: 16px; margin-bottom: 30px; }
-.recommend-box h3 { margin: 0 0 10px; color: #1f2937; font-size: 1.1rem; }
-.recommend-box p { margin: 0; color: #4b5563; font-size: 0.95rem; }
+.result-desc { 
+  color: var(--text-secondary); 
+  line-height: 1.6; 
+  margin-bottom: 30px; 
+  word-break: keep-all; 
+}
 
-/* 버튼 스타일 수정 */
-.primary-btn { width: 100%; padding: 16px; font-size: 1.1rem; font-weight: 700; background: #10b981; color: white; border: none; border-radius: 12px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+.recommend-box { 
+  background: var(--bg-body); /* 배경보다 약간 더 짙거나 연한 톤 */
+  padding: 20px; 
+  border-radius: 16px; 
+  margin-bottom: 30px; 
+  border: 1px solid var(--border-color);
+}
+.recommend-box h3 { margin: 0 0 10px; color: var(--text-primary); font-size: 1.1rem; }
+.recommend-box p { margin: 0; color: var(--text-secondary); font-size: 0.95rem; }
+
+/* =====================
+  6. 하단 액션 버튼
+===================== */
+.start-btn { width: 100%; padding: 16px; font-size: 1.2rem; font-weight: 700; background: #3b82f6; color: white; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+.start-btn:hover { background: #2563eb; }
+
+.primary-btn { 
+  width: 100%; 
+  padding: 16px; 
+  font-size: 1.1rem; 
+  font-weight: 700; 
+  background: #10b981; 
+  color: white; 
+  border: none; 
+  border-radius: 12px; 
+  cursor: pointer; 
+  margin-bottom: 10px; 
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); 
+}
 .primary-btn:hover { background: #059669; }
-.retry-btn { width: 100%; padding: 14px; font-size: 1rem; font-weight: 600; background: white; color: #666; border: 1px solid #ddd; border-radius: 12px; cursor: pointer; }
-.retry-btn:hover { background: #f9fafb; }
+
+.retry-btn { 
+  width: 100%; 
+  padding: 14px; 
+  font-size: 1rem; 
+  font-weight: 600; 
+  background: var(--bg-card); 
+  color: var(--text-muted); 
+  border: 1px solid var(--border-color); 
+  border-radius: 12px; 
+  cursor: pointer; 
+}
+.retry-btn:hover { 
+  background: var(--bg-body); 
+  color: var(--text-secondary);
+}
 </style>

@@ -13,7 +13,7 @@
           class="search-input"
         >
         <button @click="searchVideos" class="search-btn">
-          🔍 검색
+          검색
         </button>
       </div>
     </div>
@@ -97,10 +97,16 @@ const searchVideos = async () => {
 </script>
 
 <style scoped>
+/* =====================
+  1. 전체 레이아웃 및 배경
+===================== */
 .search-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
+  background-color: var(--bg-body); /* 배경 변수 적용 */
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
 }
 
 .header-section {
@@ -108,27 +114,38 @@ const searchVideos = async () => {
   margin-bottom: 50px;
 }
 
+/* =====================
+  2. 폰트 컬러 (다크모드 대응)
+===================== */
 h1 {
   font-size: 2.5rem;
-  color: #2c3e50;
+  /* 라이트: #2c3e50, 다크: var(--text-primary) */
+  color: var(--text-primary);
   margin-bottom: 10px;
   font-weight: 800;
 }
 
 .subtitle {
-  color: #666;
+  /* 라이트: #666, 다크: var(--text-secondary) */
+  color: var(--text-secondary);
   margin-bottom: 30px;
 }
 
-/* 검색창 스타일 */
+/* =====================
+  3. 검색창 스타일 (디자인 유지 + 다크모드 가시성)
+===================== */
 .search-box {
   display: flex;
   max-width: 600px;
   margin: 0 auto;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  /* 다크모드에서는 그림자를 더 깊게 조정 */
+  box-shadow: 0 4px 15px var(--shadow-color);
   border-radius: 50px;
   overflow: hidden;
-  border: 1px solid #eee;
+  /* 라이트: #eee, 다크: var(--border-color) */
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  transition: all 0.3s ease;
 }
 
 .search-input {
@@ -137,10 +154,16 @@ h1 {
   border: none;
   font-size: 16px;
   outline: none;
+  background: transparent; /* 부모인 search-box 배경색을 따름 */
+  color: var(--text-primary);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
 }
 
 .search-btn {
-  background-color: #3182f6; /* 포인트 컬러 */
+  background-color: #3182f6; /* 포인트 컬러 유지 */
   color: white;
   border: none;
   padding: 0 30px;
@@ -154,17 +177,18 @@ h1 {
   background-color: #2372e0;
 }
 
-/* 비디오 그리드 레이아웃 */
+/* =====================
+  4. 그리드 및 결과 메시지
+===================== */
 .video-grid {
   display: grid;
-  /* 화면 크기에 따라 자동으로 열 개수 조절 (최소 280px) */
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
 }
 
 .no-result {
   text-align: center;
-  color: #999;
+  color: var(--text-muted); /* #999 대신 변수 사용 */
   margin-top: 50px;
   font-size: 1.2rem;
 }

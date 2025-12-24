@@ -1,14 +1,21 @@
 <template>
   <div class="page-container">
     
+    <div class="header-section">
+      <span class="badge-title">실시간 정보</span>
+      <h1 class="page-title">💱 환율 계산기</h1>
+      <p class="page-subtitle">주요 통화의 실시간 환율을 확인하고 계산해보세요.</p>
+    </div>
+
     <div v-if="loading" class="loading-msg">
-      <p>⏳ 환율 정보를 불러오는 중입니다...</p>
+      <div class="spinner"></div>
+      <p>환율 정보를 불러오는 중입니다...</p>
     </div>
 
     <div v-else class="dashboard-layout">
 
       <div class="exchange-card">
-        <h1 class="card-title">환율 계산기</h1>
+        <h2 class="card-title">계산하기</h2>
 
         <div class="currency-box input-active">
           <div class="box-header">
@@ -286,9 +293,23 @@ const chartOptions = {
   maintainAspectRatio: false,
   plugins: { legend: { display: false } },
   scales: {
-    x: { grid: { display: false }, ticks: { color: '#6b7280', font: { size: 11 } } },
+    x: { 
+      grid: { display: false }, 
+      ticks: { 
+        // 텍스트 색상을 변수에 맞추거나 동적으로 설정
+        color: '#8b95a1', 
+        font: { size: 11 } 
+      } 
+    },
     y: { 
-      grid: { color: '#f3f4f6' }, 
+      // 다크 모드일 때 선 색상을 더 어둡게 처리
+      grid: { 
+        color: 'rgba(139, 149, 161, 0.1)' 
+      }, 
+      ticks: {
+        color: '#8b95a1',
+        font: { size: 11 }
+      },
       suggestedMin: (ctx) => {
         if(!ctx.chart.data.datasets.length) return 0;
         const values = ctx.chart.data.datasets[0].data;
@@ -300,40 +321,287 @@ const chartOptions = {
 </script>
 
 <style scoped>
-/* 기존 스타일 그대로 유지 */
-.loading-msg { display: flex; justify-content: center; align-items: center; min-height: 80vh; font-size: 1.2rem; color: #6b7280; font-weight: 600; }
-.page-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; background-color: #f5f7fa; padding: 40px 20px; }
-.exchange-card { background: white; width: 100%; max-width: 480px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); text-align: center; }
-.card-title { font-size: 1.8rem; font-weight: 800; color: #1a1a1a; margin-bottom: 30px; }
-.currency-box { background-color: #f3f4f6; border-radius: 16px; padding: 20px; transition: all 0.3s ease; border: 2px solid transparent; }
-/* ★ 둘 다 입력 가능하므로 둘 다 focus 효과 적용 */
-.currency-box.input-active:focus-within { border-color: #3b82f6; background-color: #fff; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
-.result-box { background-color: #eef2ff; }
-.box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.box-label { font-size: 0.95rem; font-weight: 600; color: #6b7280; }
-.currency-select, .currency-unit { font-weight: 700; color: #374151; font-size: 1rem; }
-.currency-select { padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 8px; background-color: white; cursor: pointer; outline: none; }
-.input-area { display: flex; justify-content: flex-end; }
-.amount-input { width: 100%; border: none; background: transparent; font-size: 2.5rem; font-weight: 800; text-align: right; color: #111827; outline: none; padding: 0; }
-.result-text { color: #3b82f6; }
-/* number input 화살표 제거 */
-.amount-input::-webkit-outer-spin-button, .amount-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  /* ▼▼▼ [수정] 레이아웃 및 헤더 스타일 추가 ▼▼▼ */
+.page-container {
+  display: flex;
+  flex-direction: column; /* 세로 정렬로 변경 */
+  align-items: center;    /* 가로 중앙 정렬 */
+  min-height: 80vh;
+  background-color: #f5f7fa;
+  padding: 60px 20px;     /* 상단 여백 확보 */
+}
 
-.swap-icon-wrapper { position: relative; height: 20px; display: flex; justify-content: center; align-items: center; z-index: 2; }
-.swap-icon { position: absolute; top: -18px; background: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; border: 3px solid #f5f7fa; color: #6b7280; cursor: pointer; transition: transform 0.2s ease, background-color 0.2s; }
-.swap-icon:hover { transform: scale(1.1); background-color: #eff6ff; color: #3b82f6; border-color: #dbeafe; }
-.swap-icon:active { transform: scale(0.95); }
+/* 제목 섹션 스타일 */
+.header-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
 
-.rate-info { margin-top: 25px; font-size: 0.9rem; color: #6b7280; }
-.info-icon { font-size: 1.1rem; }
+.badge-title {
+  background-color: var(--bg-badge); /* 변수 사용 */
+  color: #4a86e8; /* 다크모드 가독성 블루 */
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-bottom: 12px;
+}
 
-.dashboard-layout { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 1000px; align-items: center; }
-@media (min-width: 900px) { .dashboard-layout { flex-direction: row; align-items: stretch; } .exchange-card, .chart-card { flex: 1; max-width: none; } }
-.chart-card { background: white; width: 100%; max-width: 480px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; justify-content: center; }
-.chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.chart-header h2 { font-size: 1.4rem; font-weight: 800; color: #1a1a1a; margin: 0; }
-.badge { background-color: #eff6ff; color: #3b82f6; font-weight: 700; font-size: 0.85rem; padding: 6px 12px; border-radius: 20px; }
-.chart-wrapper { position: relative; height: 300px; width: 100%; }
-.chart-desc { margin-top: 20px; text-align: center; color: #6b7280; font-size: 0.95rem; line-height: 1.5; }
-.chart-desc strong { color: #3b82f6; }
+.page-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary); /* ✨ 고정값 #111에서 변수로 변경 */
+  letter-spacing: -1px;
+  margin: 0 0 10px 0;
+}
+
+.page-subtitle {
+  color: var(--text-secondary); /* ✨ 고정값 #666에서 변수로 변경 */
+  font-size: 1.1rem;
+  margin: 0;
+}
+/* =====================
+  1. 전체 레이아웃 및 배경
+===================== */
+/* =====================
+  1. 전체 레이아웃 및 배경 (수정됨)
+===================== */
+.page-container { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  min-height: 80vh; 
+  /* ✨ 고정값 #f5f7fa 대신 변수 사용 */
+  background-color: var(--bg-body); 
+  padding: 60px 20px; 
+  transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+/* 나머지 디자인 배치는 그대로 유지됩니다 */
+.loading-msg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 1000px;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .dashboard-layout {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .exchange-card, .chart-card {
+    flex: 1;
+    max-width: none;
+  }
+}
+
+/* =====================
+  2. 카드 공통 스타일
+===================== */
+.exchange-card, .chart-card {
+  background: var(--bg-card); /* 카드 배경 변수 */
+  width: 100%;
+  max-width: 480px;
+  padding: 40px 30px;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.card-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+}
+
+/* =====================
+  3. 환율 입력 박스 (가시성 강화)
+===================== */
+.currency-box {
+  background-color: var(--bg-body); /* 카드 내부 입력창 배경 */
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+/* 포커스 효과 */
+.currency-box.input-active:focus-within {
+  border-color: #4a86e8;
+  background-color: var(--bg-card);
+  box-shadow: 0 0 0 4px rgba(74, 134, 232, 0.15);
+}
+
+.result-box {
+  background-color: var(--bg-badge); /* 결과창은 약간 다른 톤 */
+  border: 1px solid rgba(74, 134, 232, 0.1);
+}
+
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.box-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.currency-select, .currency-unit {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.currency-select {
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+}
+
+.input-area {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.amount-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: right;
+  color: var(--text-primary);
+  outline: none;
+  padding: 0;
+  letter-spacing: -1px;
+}
+
+.result-text {
+  color: #4a86e8;
+  text-shadow: 0 0 8px rgba(74, 134, 232, 0.2);
+}
+
+/* =====================
+  4. 스왑 아이콘 & 정보
+===================== */
+.swap-icon-wrapper {
+  position: relative;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.swap-icon {
+  position: absolute;
+  top: -18px;
+  background: var(--bg-card);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  border: 3px solid var(--bg-body);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.swap-icon:hover {
+  transform: rotate(180deg) scale(1.1);
+  color: #4a86e8;
+  border-color: #4a86e8;
+}
+
+.rate-info {
+  margin-top: 25px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* =====================
+  5. 차트 섹션
+===================== */
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.chart-header h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.badge {
+  background-color: var(--bg-badge);
+  color: #4a86e8;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+.chart-desc {
+  margin-top: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.chart-desc strong {
+  color: #4a86e8;
+}
+
+/* 크롬 number 화살표 제거 */
+.amount-input::-webkit-outer-spin-button,
+.amount-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 </style>

@@ -15,6 +15,19 @@
   text-align: center;
   margin-top: 100px;
 }
-h1 { font-size: 3rem; color: #2c3e50; margin-bottom: 20px; }
-p { font-size: 1.2rem; color: #666; }
+
+h1 { 
+  font-size: 3rem; 
+  /* 라이트: #2c3e50, 다크: var(--text-primary) */
+  color: var(--text-primary); 
+  margin-bottom: 20px; 
+  transition: color 0.3s ease;
+}
+
+p { 
+  font-size: 1.2rem; 
+  /* 라이트: #666, 다크: var(--text-secondary) */
+  color: var(--text-secondary); 
+  transition: color 0.3s ease;
+}
 </style>
