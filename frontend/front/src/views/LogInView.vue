@@ -37,17 +37,31 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router' // 1. 라우터 import 추가
 
 const store = useAuthStore()
+const router = useRouter() // 2. 라우터 사용 설정
 const username = ref(null)
 const password = ref(null)
 
-const submitForm = function () {
+// 3. 함수 앞에 async 붙이기
+const submitForm = async function () {
   const payload = {
     username: username.value,
     password: password.value
   }
-  store.logIn(payload)
+  
+  try {
+    // 4. 스토어의 로그인이 끝날 때까지 기다림 (await)
+    await store.logIn(payload)
+    
+    // 5. 로그인 성공 시 홈으로 이동 (replace는 뒤로가기 눌러도 로그인창 안 나오게 함)
+    router.replace({ name: 'home' }) 
+  } catch (err) {
+    // 실패 시 스토어에서 이미 alert를 띄웠으므로 여기선 따로 할 게 없거나,
+    // 추가적인 에러 처리를 할 수 있음 (예: 비밀번호 입력창 비우기)
+    password.value = '' 
+  }
 }
 </script>
 

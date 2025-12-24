@@ -15,51 +15,64 @@
       </div>
     </div>
 
-    <nav class="main-nav">
-      <div class="nav-left">
-        <RouterLink :to="{ name: 'home' }" class="logo">
-          라고 할 때 살걸
-        </RouterLink>
+  <nav class="main-nav">
+    <div class="nav-left">
+      <RouterLink :to="{ name: 'home' }" class="logo">
+        라고 할 때 살걸
+      </RouterLink>
+    </div>
+
+    <div class="nav-right">
+      
+      <div class="nav-group">
+        <button class="nav-btn">
+          금융 상품 <span class="arrow">▼</span>
+        </button>
+        <div class="dropdown-menu">
+          <RouterLink :to="{ name: 'products' }" class="dropdown-item">
+            🏦 예적금 비교
+          </RouterLink>
+          <RouterLink :to="{ name: 'BankView' }" class="dropdown-item">
+            📍 주변 은행 찾기
+          </RouterLink>
+        </div>
       </div>
 
-      <div class="nav-right">
-        
-        <div class="nav-group">
-          <button class="nav-btn">
-            금융 상품 <span class="arrow">▼</span>
-          </button>
-          <div class="dropdown-menu">
-            <RouterLink :to="{ name: 'products' }" class="dropdown-item">
-              🏦 예적금 비교
-            </RouterLink>
-            <RouterLink :to="{ name: 'BankView' }" class="dropdown-item">
-              📍 주변 은행 찾기
-            </RouterLink>
-          </div>
+      <div class="nav-group">
+        <button class="nav-btn">
+          투자/분석 <span class="arrow">▼</span>
+        </button>
+        <div class="dropdown-menu">
+          <RouterLink :to="{ name: 'exchange' }" class="dropdown-item">
+            💱 환율 계산기
+          </RouterLink>
+          <RouterLink :to="{ name: 'gold' }" class="dropdown-item">
+            🥇 금/현물 시세
+          </RouterLink>
+          <RouterLink :to="{ name: 'youtube-search' }" class="dropdown-item">
+            📺 금융 영상 검색
+          </RouterLink>
         </div>
+      </div>
 
-        <div class="nav-group">
-          <button class="nav-btn">
-            투자/분석 <span class="arrow">▼</span>
-          </button>
-          
-          <div class="dropdown-menu">
-            <RouterLink :to="{ name: 'exchange' }" class="dropdown-item">
-              💱 환율 계산기
-            </RouterLink>
-            <RouterLink :to="{ name: 'gold' }" class="dropdown-item">
-              🥇 금/현물 시세
-            </RouterLink>
-            <RouterLink :to="{ name: 'youtube-search' }" class="dropdown-item">
-              📺 금융 영상 검색
-            </RouterLink>
-          </div>
+      <div class="nav-group">
+        <button class="nav-btn">
+          AI 맞춤 금융 비서 <span class="arrow">▼</span>
+        </button>
+        <div class="dropdown-menu">
+          <RouterLink :to="{ name: 'test' }" class="dropdown-item">
+            💰 금융 MBTI 테스트
+          </RouterLink>
+          <RouterLink :to="{ name: 'chatbot' }" class="dropdown-item">
+            🤖 나만의 비서 AI 챗봇
+          </RouterLink>
         </div>
-        <RouterLink :to="{ name: 'test' }" class="nav-item">💰금융성향테스트</RouterLink>
-        <RouterLink :to="{ name: 'articles' }" class="nav-item single-link">
-          게시판
-        </RouterLink>
-        
+      </div>
+
+      <RouterLink :to="{ name: 'articles' }" class="nav-item single-link">
+        게시판
+      </RouterLink>
+      
       </div>
     </nav>
   </header>

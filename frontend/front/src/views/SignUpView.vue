@@ -150,7 +150,7 @@ const handleSignup = async () => {
       gender: form.value.gender,             // 추가
       job: form.value.job,                   // 추가
       income_source: form.value.income_source, // 추가
-      mbti: form.value.mbti || 'neutral',    // 없으면 기본값(중립)
+      mbti: form.value.mbti ? form.value.mbti : null,    // 없으면 기본값(중립)
       is_mydata_agreed: form.value.is_mydata_agreed
     }
 
@@ -160,9 +160,30 @@ const handleSignup = async () => {
       
     await axios.post(url, payload)
     
-    alert('환영합니다! 이제 FinBot과 대화해보세요.')
-    router.push({ name: 'login' })
     
+
+    await store.logIn({
+      username: form.value.username,
+      password: form.value.password
+    })
+
+
+    if (store.token) {
+      alert('환영합니다! 회원가입과 로그인이 완료되었습니다.')
+      
+      // MBTI 결과가 있으면 챗봇으로, 없으면 메인으로
+      if (form.value.mbti) {
+        router.replace({ name: 'chatbot' }) // push 대신 replace 추천 (뒤로가기 방지)
+      } else {
+        router.push({ name: 'home' })
+      }
+    } else {
+      // 만약 로그인이 됐는데도 토큰이 안 보이면? (예외 처리)
+      alert('로그인 처리 중입니다. 잠시 후 로그인 해주세요.')
+      router.push({ name: 'login' })
+    }
+
+
   } catch (error) {
     console.error(error)
     alert('회원가입 실패: 입력 정보를 확인해주세요.')
