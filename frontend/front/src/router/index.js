@@ -119,6 +119,11 @@ const router = createRouter({
       name: 'product-detail',
       component: ProductDetailView
     },
+    {
+      path: '/chat',
+      name: 'chatbot',
+      component: ChatView
+    },
   ]
 })
 
