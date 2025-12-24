@@ -5,7 +5,7 @@
       <div class="header-section">
         <div class="title-area">
           <span class="sub-badge">금융 상품</span>
-          <h1>💰 예적금 비교</h1>
+          <h1>예적금 비교</h1>
         </div>
 
         <div class="controls">
@@ -61,7 +61,6 @@
                 @click="goDetail(product)"
               >
                 <td class="bank-name">
-                  <div class="bank-logo-placeholder">{{ product.kor_co_nm[0] }}</div>
                   {{ product.kor_co_nm }}
                 </td>
                 <td class="product-name">{{ product.fin_prdt_nm }}</td>
@@ -136,9 +135,10 @@ const goDetail = (product) => {
 <style scoped>
 /* 페이지 전체 배경 및 레이아웃 */
 .page-container {
-  background-color: #f2f4f6;
+  background-color: var(--bg-body);
   min-height: 100vh;
   padding: 40px 20px;
+  transition: background-color 0.3s ease;
 }
 
 .content-wrapper {
@@ -155,10 +155,15 @@ const goDetail = (product) => {
   flex-wrap: wrap;
   gap: 20px;
 }
-
+.controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-direction: row; /* 반드시 row(가로)여야 합니다 */
+}
 .sub-badge {
   display: inline-block;
-  color: #3182f6;
+  color: #4a86e8; /* 톤다운된 블루 */
   font-weight: 700;
   margin-bottom: 8px;
   font-size: 14px;
@@ -167,19 +172,13 @@ const goDetail = (product) => {
 .title-area h1 {
   font-size: 32px;
   font-weight: 800;
-  color: #191f28;
+  color: var(--text-primary);
   margin: 0;
 }
 
-.controls {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-
-/* 탭 버튼 스타일 (토글 형태) */
+/* 탭 버튼 스타일 */
 .tab-group {
-  background-color: #e8f3ff;
+  background-color: var(--bg-badge);
   padding: 4px;
   border-radius: 12px;
   display: flex;
@@ -190,7 +189,7 @@ const goDetail = (product) => {
   font-size: 15px;
   border: none;
   background: transparent;
-  color: #7090b0;
+  color: var(--text-secondary);
   cursor: pointer;
   border-radius: 10px;
   font-weight: 600;
@@ -198,177 +197,79 @@ const goDetail = (product) => {
 }
 
 .tab-group button.active {
-  background-color: #3182f6;
+  background-color: #4a86e8;
   color: white;
-  box-shadow: 0 2px 8px rgba(49, 130, 246, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.tab-group button:hover:not(.active) {
-  color: #3182f6;
+/* 다크모드 전용 액티브 색상 */
+:global([data-theme="dark"]) .tab-group button.active {
+  background-color: #14428b;
 }
 
 /* 셀렉트 박스 */
-.select-wrapper {
-  position: relative;
-}
-
 .bank-select {
   padding: 12px 16px;
   font-size: 15px;
-  border: 1px solid #d1d6db;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  background-color: white;
-  color: #333d4b;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
   min-width: 180px;
   cursor: pointer;
   outline: none;
   transition: border-color 0.2s;
 }
 
-.bank-select:focus {
-  border-color: #3182f6;
-}
-
 /* 2. 테이블 카드 스타일 */
 .table-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  overflow: hidden; /* 모서리 둥글게 유지 */
-  border: 1px solid rgba(0,0,0,0.03);
-}
-
-.table-scroll {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
 th {
-  background-color: #f9fafb;
-  color: #4e5968;
+  background-color: var(--bg-body);
+  color: var(--text-secondary);
   font-weight: 600;
   padding: 18px;
-  font-size: 14px;
-  border-bottom: 1px solid #e5e8eb;
-  white-space: nowrap;
+  border-bottom: 1px solid var(--border-color);
 }
 
 td {
   padding: 20px 15px;
-  border-bottom: 1px solid #f2f4f6;
-  color: #4e5968;
-  font-size: 15px;
-  vertical-align: middle;
-}
-
-/* 행 호버 효과 */
-tr {
-  cursor: pointer;
-  transition: background-color 0.2s;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
 }
 
 tr:hover {
-  background-color: #eff6ff; /* 연한 파란색 */
+  background-color: var(--bg-hover);
 }
 
-/* 테이블 내부 요소 스타일 */
 .bank-name {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
   font-weight: 700;
-  color: #191f28;
-}
-
-.bank-logo-placeholder {
-  width: 32px;
-  height: 32px;
-  background-color: #f2f4f6;
-  color: #8b95a1;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
+  color: var(--text-primary);
 }
 
 .product-name {
-  text-align: left;
-  font-weight: 500;
-  color: #333d4b;
-}
-
-.rate {
-  font-variant-numeric: tabular-nums; /* 숫자 간격 일정하게 */
+  color: var(--text-primary);
 }
 
 .main-rate {
-  color: #3182f6;
+  color: #4a86e8;
   font-weight: 800;
-  font-size: 16px;
 }
 
 .tag {
-  background-color: #f2f4f6;
-  color: #6b7684;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
+  background-color: var(--bg-body);
+  color: var(--text-muted);
 }
 
-/* 로딩/데이터 없음 */
-.no-data {
-  text-align: center;
-  padding: 80px;
-  color: #8b95a1;
-}
-
+/* 로딩 애니메이션 */
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f2f4f6;
-  border-top-color: #3182f6;
-  border-radius: 50%;
-  margin: 0 auto 20px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@media (max-width: 768px) {
-  .header-section {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .controls {
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .tab-group, .select-wrapper {
-    width: 100%;
-  }
-  .tab-group button {
-    flex: 1;
-  }
-  .bank-select {
-    width: 100%;
-  }
-  .product-name {
-    text-align: center;
-  }
-  .bank-name {
-    flex-direction: column;
-  }
+  border: 4px solid var(--border-color);
+  border-top-color: #4a86e8;
 }
 </style>

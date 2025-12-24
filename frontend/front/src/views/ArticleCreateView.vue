@@ -1,31 +1,40 @@
 <template>
-  <div class="page-bg">
-    <div class="create-container">
-      <h1 class="page-title">게시글 작성</h1>
-      <p class="sub-title">금융 생활에 대한 이야기를 자유롭게 남겨보세요.</p>
+  <div class="page-container">
+    <div class="editor-card">
       
-      <form @submit.prevent="createArticle">
-        <div class="form-group">
-          <label for="title">제목</label>
-          <input 
-            type="text" 
-            id="title" 
-            v-model.trim="title" 
-            placeholder="제목을 입력해주세요"
-          >
+      <div class="editor-header">
+        <div class="top-row">
+          <span class="badge">New Post</span>
+          <button type="button" @click="goBack" class="btn-close">✕ 닫기</button>
         </div>
         
-        <div class="form-group">
-          <label for="content">내용</label>
-          <textarea 
-            id="content" 
-            v-model.trim="content" 
-            placeholder="내용을 입력하세요"
-          ></textarea>
+        <input 
+          type="text" 
+          id="title" 
+          v-model.trim="title" 
+          placeholder="제목을 입력하세요"
+          class="input-title"
+        >
+      </div>
+
+      <div class="divider"></div>
+      
+      <form @submit.prevent="createArticle" class="editor-body">
+        <textarea 
+          id="content" 
+          v-model.trim="content" 
+          placeholder="금융 생활에 대한 궁금증이나 꿀팁을 자유롭게 나눠보세요..."
+          class="textarea-content"
+        ></textarea>
+
+        <div class="bottom-bar">
+          <div class="btn-group">
+            <button type="button" @click="goBack" class="btn-cancel">취소</button>
+            <button type="submit" class="btn-submit">등록하기</button>
+          </div>
         </div>
-        
-        <button type="submit" class="submit-btn">작성하기</button>
       </form>
+      
     </div>
   </div>
 </template>
@@ -40,6 +49,11 @@ const router = useRouter()
 
 const title = ref('')
 const content = ref('')
+
+// 뒤로가기
+const goBack = () => {
+  router.back()
+}
 
 const createArticle = function () {
   if (!title.value) {
@@ -58,7 +72,7 @@ const createArticle = function () {
 
   store.createArticle(payload)
     .then((res) => {
-      console.log('게시글 작성 성공')
+      // 성공 시 목록으로 이동
       router.push({ name: 'articles' }) 
     })
     .catch((err) => {
@@ -73,51 +87,149 @@ const createArticle = function () {
 </script>
 
 <style scoped>
-/* 배경 및 레이아웃 */
-.page-bg { background-color: #f2f4f6; min-height: 100vh; padding: 40px 20px; }
-.create-container { max-width: 700px; margin: 0 auto; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
 
-/* 타이포그래피 */
-.page-title { font-size: 24px; font-weight: 700; color: #191f28; margin-bottom: 8px; }
-.sub-title { color: #8b95a1; font-size: 15px; margin-bottom: 30px; }
-
-/* 폼 스타일 */
-.form-group { margin-bottom: 24px; display: flex; flex-direction: column; }
-label { font-weight: 600; margin-bottom: 8px; color: #333d4b; font-size: 15px; }
-
-input, textarea { 
-  width: 100%; 
-  padding: 14px 16px; 
-  border: 1px solid #e5e8eb; 
-  border-radius: 12px; 
-  font-size: 16px; 
-  background-color: #f9fafb; 
-  transition: all 0.2s;
-  box-sizing: border-box;
+.page-container {
+  background-color: var(--bg-body);
+  height: 100%;
+  min-height: auto;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: 'Pretendard', sans-serif;
+  transition: background-color 0.3s ease;
 }
 
-input:focus, textarea:focus { 
-  outline: none; 
-  border-color: #3182f6; 
-  background-color: white; 
-  box-shadow: 0 0 0 2px rgba(49, 130, 246, 0.1);
+.editor-card {
+  width: 100%;
+  max-width: 900px;
+  background-color: var(--bg-card);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s ease;
+  border: 1px solid var(--border-color);
 }
 
-textarea { height: 250px; resize: none; }
+.editor-header { margin-bottom: 20px; }
 
-/* 버튼 */
-.submit-btn { 
-  width: 100%; 
-  padding: 16px; 
-  background-color: #3182f6; /* 토스 블루 */
-  color: white; 
-  border: none; 
-  border-radius: 16px; 
-  cursor: pointer; 
-  font-size: 17px; 
-  font-weight: 700; 
-  transition: background-color 0.2s;
-  margin-top: 10px;
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
-.submit-btn:hover { background-color: #1b64da; }
+
+.badge {
+  background-color: var(--bg-badge);
+  /* 뱃지 글자색 톤다운 */
+  color: #4a86e8;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+:global([data-theme="dark"]) .badge { color: #6baaf7; }
+
+.btn-close {
+  background: none; border: none; font-size: 1rem;
+  color: var(--text-muted); cursor: pointer; font-weight: 600;
+  transition: color 0.2s;
+}
+.btn-close:hover { color: var(--text-primary); }
+
+.input-title {
+  width: 100%;
+  border: none;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  outline: none;
+  padding: 10px 0;
+  background: transparent;
+}
+.input-title::placeholder { color: var(--text-muted); }
+
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin-bottom: 30px;
+}
+
+.editor-body { display: flex; flex-direction: column; }
+
+.textarea-content {
+  width: 100%;
+  min-height: 40vh;
+  border: none;
+  resize: vertical;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  outline: none;
+  background: transparent;
+  font-family: 'Pretendard', sans-serif;
+  margin-bottom: 30px;
+}
+.textarea-content::placeholder { color: var(--text-muted); }
+
+.bottom-bar {
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-group { display: flex; gap: 12px; }
+
+button {
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-cancel {
+  background-color: var(--bg-body);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+.btn-cancel:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ✨ [수정] 제출 버튼 (톤다운) */
+.btn-submit {
+  /* 차분한 파란색 */
+  background-color: #4a86e8;
+  color: white;
+  box-shadow: 0 4px 12px rgba(74, 134, 232, 0.2);
+}
+
+/* ✨ [수정] 다크모드 제출 버튼 (더 차분하게) */
+:global([data-theme="dark"]) .btn-submit {
+  background-color: #395c96;
+  color: #e8eaed;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-submit:hover {
+  filter: brightness(0.9);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .editor-card { padding: 30px 20px; }
+  .input-title { font-size: 1.8rem; }
+  .textarea-content { min-height: 30vh; font-size: 1rem; }
+  .btn-group { width: 100%; }
+  .btn-group button { flex: 1; }
+}
 </style>

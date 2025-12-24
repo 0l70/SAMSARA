@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="page-title">💰 정기예금 검색</h1>
+    <h1 class="page-title">정기예금 검색</h1>
     
     <div class="table-container">
       <table class="product-table">

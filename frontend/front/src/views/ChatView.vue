@@ -171,20 +171,35 @@ const sendMessage = async () => {
 </script>
 
 <style scoped>
+/* =====================
+  1. 전체 컨테이너 및 배경
+===================== */
 .chat-container {
-  max-width: 600px; margin: 30px auto; border: 1px solid #ddd; border-radius: 16px;
-  overflow: hidden; display: flex; flex-direction: column; height: 80vh; background: #fff;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  max-width: 600px; margin: 30px auto; 
+  border: 1px solid var(--border-color); /* #ddd -> 변수 */
+  border-radius: 16px;
+  overflow: hidden; display: flex; flex-direction: column; height: 80vh; 
+  background: var(--bg-card); /* #fff -> 변수 */
+  box-shadow: 0 10px 20px var(--shadow-color);
+  transition: background-color 0.3s ease;
 }
 
+/* =====================
+  2. 헤더 섹션
+===================== */
 .chat-header {
   background: #3b82f6; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
 }
 .chat-header h1 { font-size: 1.2rem; margin: 0; font-weight: 700; }
 .user-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; }
 
+/* =====================
+  3. 채팅 창 및 메시지 버블
+===================== */
 .chat-window {
-  flex: 1; padding: 20px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 15px;
+  flex: 1; padding: 20px; overflow-y: auto; 
+  background: var(--bg-body); /* #f9fafb -> 변수 */
+  display: flex; flex-direction: column; gap: 15px;
 }
 
 .message { display: flex; }
@@ -194,29 +209,59 @@ const sendMessage = async () => {
 .bubble {
   max-width: 70%; padding: 12px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; word-break: break-word;
 }
-.message.user .bubble { background: #3b82f6; color: white; border-bottom-right-radius: 2px; }
-.message.ai .bubble { background: white; color: #333; border: 1px solid #e5e7eb; border-bottom-left-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-/* 마크다운 스타일링 (v-html 내부) */
+/* 사용자 메시지 (블루 톤 유지) */
+.message.user .bubble { background: #3b82f6; color: white; border-bottom-right-radius: 2px; }
+
+/* AI 메시지 (다크모드 대응) */
+.message.ai .bubble { 
+  background: var(--bg-card); /* white -> 변수 */
+  color: var(--text-primary); /* #333 -> 변수 */
+  border: 1px solid var(--border-color); 
+  border-bottom-left-radius: 2px; 
+  box-shadow: 0 2px 4px var(--shadow-color); 
+}
+
+/* 마크다운 스타일링 (다크모드 강조색 조정) */
 :deep(.bubble ul) { margin: 5px 0 5px 20px; padding: 0; }
 :deep(.bubble li) { margin-bottom: 4px; }
-:deep(.bubble strong) { color: #2563eb; font-weight: 700; } /* 강조색 */
+:deep(.bubble strong) { 
+  color: #60a5fa; /* 다크모드 가독성을 위해 조금 더 밝은 블루 사용 */
+  font-weight: 700; 
+} 
 
+/* =====================
+  4. 하단 입력 영역
+===================== */
 .input-area {
-  padding: 15px; border-top: 1px solid #eee; background: white; display: flex; gap: 10px;
+  padding: 15px; border-top: 1px solid var(--border-color); 
+  background: var(--bg-card); /* white -> 변수 */
+  display: flex; gap: 10px;
 }
+
 .input-area input {
-  flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 24px; outline: none; transition: border 0.2s;
+  flex: 1; padding: 12px; 
+  border: 1px solid var(--border-color); /* #ddd -> 변수 */
+  border-radius: 24px; outline: none; transition: all 0.2s;
+  background-color: var(--bg-body); /* 입력창 내부 어둡게 */
+  color: var(--text-primary);
 }
-.input-area input:focus { border-color: #3b82f6; }
+
+.input-area input:focus { 
+  border-color: #3b82f6; 
+  background-color: var(--bg-card); /* 포커스 시 약간 밝아짐 */
+}
+
 .input-area button {
   padding: 0 20px; background: #3b82f6; color: white; border: none; border-radius: 24px; font-weight: 600; cursor: pointer;
 }
-.input-area button:disabled { background: #9ca3af; cursor: not-allowed; }
+.input-area button:disabled { background: var(--text-muted); cursor: not-allowed; opacity: 0.6; }
 
-/* 로딩 애니메이션 */
+/* 로딩 애니메이션 (색상 변수화) */
 .loading span {
   display: inline-block; animation: bounce 1.4s infinite ease-in-out both; margin: 0 2px;
+  background-color: var(--text-muted); /* 로딩 점 색상 */
+  width: 6px; height: 6px; border-radius: 50%; /* 로딩바 형태 유지 */
 }
 .loading span:nth-child(1) { animation-delay: -0.32s; }
 .loading span:nth-child(2) { animation-delay: -0.16s; }

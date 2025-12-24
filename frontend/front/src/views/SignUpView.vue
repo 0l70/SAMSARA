@@ -192,35 +192,148 @@ const handleSignup = async () => {
 </script>
 
 <style scoped>
-/* 기존 스타일 유지 + 추가 스타일 */
-.signup-container { display: flex; justify-content: center; align-items: center; min-height: 90vh; background-color: #f5f7fa; padding: 20px; }
-.signup-card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 450px; }
+/* =====================
+  1. 전체 레이아웃 및 카드
+===================== */
+.signup-container { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  min-height: 90vh; 
+  background-color: var(--bg-body); /* #f5f7fa -> 변수 */
+  padding: 20px; 
+  transition: background-color 0.3s ease;
+}
 
-/* MBTI 뱃지 */
+.signup-card { 
+  background: var(--bg-card); /* white -> 변수 */
+  padding: 40px; 
+  border-radius: 16px; 
+  box-shadow: 0 4px 20px var(--shadow-color); /* 그림자 변수 */
+  width: 100%; 
+  max-width: 450px; 
+  border: 1px solid var(--border-color); /* 테두리 추가 */
+}
+
+/* =====================
+  2. 헤더 및 뱃지
+===================== */
 .mbti-badge {
-  background-color: #eff6ff; color: #3b82f6; text-align: center;
-  padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; border: 1px solid #dbeafe;
+  background-color: var(--bg-badge); /* 라이트: 블루, 다크: 짙은 회색 */
+  color: #3182f6; 
+  text-align: center;
+  padding: 10px; 
+  border-radius: 8px; 
+  margin-bottom: 20px; 
+  font-size: 0.95rem; 
+  border: 1px solid var(--border-color);
 }
 
-h1 { margin-bottom: 10px; color: #1f2937; text-align: center; font-size: 2rem; font-weight: 800; }
-.subtitle { text-align: center; color: #6b7280; margin-bottom: 30px; font-size: 0.95rem; }
+h1 { 
+  margin-bottom: 10px; 
+  color: var(--text-primary); /* #1f2937 -> 변수 */
+  text-align: center; 
+  font-size: 2rem; 
+  font-weight: 800; 
+}
 
+.subtitle { 
+  text-align: center; 
+  color: var(--text-muted); /* #6b7280 -> 변수 */
+  margin-bottom: 30px; 
+  font-size: 0.95rem; 
+}
+
+/* =====================
+  3. 폼 요소 (Input, Select)
+===================== */
 .form-group { margin-bottom: 20px; }
-.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.95rem; }
-.form-group input, .form-group select { 
-  width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; 
-  font-size: 1rem; box-sizing: border-box; transition: border 0.2s; background-color: white;
-}
-.form-group input:focus, .form-group select:focus { border-color: #3b82f6; outline: none; }
 
-.divider { margin: 30px 0; border: none; border-top: 1px solid #e5e7eb; }
-.section-title { font-size: 1.1rem; color: #111827; margin-bottom: 20px; font-weight: 700; }
+.form-group label { 
+  display: block; 
+  margin-bottom: 8px; 
+  font-weight: 600; 
+  color: var(--text-secondary); /* #374151 -> 변수 */
+  font-size: 0.95rem; 
+}
+
+.form-group input, .form-group select { 
+  width: 100%; 
+  padding: 12px; 
+  border: 1px solid var(--border-color); /* #d1d5db -> 변수 */
+  border-radius: 8px; 
+  font-size: 1rem; 
+  box-sizing: border-box; 
+  transition: all 0.2s; 
+  background-color: var(--bg-card); /* 다크모드 시 카드 배경과 통일 */
+  color: var(--text-primary);
+}
+
+.form-group input:focus, .form-group select:focus { 
+  border-color: #3b82f6; 
+  outline: none; 
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* =====================
+  4. 기타 요소 (구분선, 동의박스 등)
+===================== */
+.divider { 
+  margin: 30px 0; 
+  border: none; 
+  border-top: 1px solid var(--border-color); 
+}
+
+.section-title { 
+  font-size: 1.1rem; 
+  color: var(--text-primary); /* #111827 -> 변수 */
+  margin-bottom: 20px; 
+  font-weight: 700; 
+}
 
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.agreement-box { background-color: #f9fafb; padding: 15px; border-radius: 8px; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 30px; }
+
+.agreement-box { 
+  background-color: var(--bg-body); /* 배경보다 약간 더 짙은 색 */
+  padding: 15px; 
+  border-radius: 8px; 
+  display: flex; 
+  gap: 10px; 
+  align-items: flex-start; 
+  margin-bottom: 30px; 
+  border: 1px solid var(--border-color);
+}
+
 .agreement-box input { width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0; }
-.agreement-box label { font-size: 0.9rem; color: #1f2937; cursor: pointer; }
-.agreement-box .desc { display: block; font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
-.signup-btn { width: 100%; padding: 14px; background-color: #3b82f6; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+
+.agreement-box label { 
+  font-size: 0.9rem; 
+  color: var(--text-secondary); /* #1f2937 -> 변수 */
+  cursor: pointer; 
+}
+
+.agreement-box .desc { 
+  display: block; 
+  font-size: 0.8rem; 
+  color: var(--text-muted); /* #6b7280 -> 변수 */
+  margin-top: 4px; 
+}
+
+/* =====================
+  5. 버튼
+===================== */
+.signup-btn { 
+  width: 100%; 
+  padding: 14px; 
+  background-color: #3b82f6; 
+  color: white; 
+  border: none; 
+  border-radius: 8px; 
+  font-size: 1.1rem; 
+  font-weight: 700; 
+  cursor: pointer; 
+  transition: background-color 0.2s;
+}
+
 .signup-btn:hover { background-color: #2563eb; }
 </style>

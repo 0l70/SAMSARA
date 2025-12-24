@@ -5,7 +5,7 @@
       <div class="header-section">
         <div class="title-area">
           <span class="sub-badge">MAP SERVICE</span>
-          <h1>🏦 주변 은행 찾기</h1>
+          <h1>주변 은행 찾기</h1>
         </div>
         <p class="desc">지역과 은행을 선택해 가까운 지점을 찾아보세요.</p>
       </div>
@@ -808,7 +808,7 @@ const countries = ref([])    // 선택된 시/도에 따른 구/군 목록
 
 
 /* =========================================================
-   2. 초기화 (onMounted)
+  2. 초기화 (onMounted)
    ========================================================= */
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
@@ -837,7 +837,7 @@ const initMap = () => {
 
 
 /* =========================================================
-   3. 검색 및 필터 로직
+  3. 검색 및 필터 로직
    ========================================================= */
 // 시/도 변경 시 구/군 목록 업데이트 (🚨 질문하신 부분 해결!)
 const onCityChange = () => {
@@ -935,7 +935,7 @@ const setBounds = (data) => {
 
 
 /* =========================================================
-   4. 위치 및 경로(Route) 로직
+  4. 위치 및 경로(Route) 로직
    ========================================================= */
 // 내 위치 찾기
 const findMyLocation = (moveMap = true) => {
@@ -1046,12 +1046,14 @@ const drawRouteTo = async (place) => {
 
 <style scoped>
 /* =====================
-   1. 전체 레이아웃
+  1. 전체 레이아웃 (변수 적용)
 ===================== */
 .page-container {
-  background-color: #f2f4f6;
+  /* 배경색 변수 적용 */
+  background-color: var(--bg-body);
   min-height: 100vh;
   padding: 40px 20px;
+  transition: background-color 0.3s ease;
 }
 
 .content-wrapper {
@@ -1060,7 +1062,7 @@ const drawRouteTo = async (place) => {
 }
 
 /* =====================
-   2. 헤더 섹션 (수정됨: 폰트 32px Bold)
+  2. 헤더 섹션
 ===================== */
 .header-section {
   text-align: left;
@@ -1069,7 +1071,7 @@ const drawRouteTo = async (place) => {
 
 .sub-badge {
   display: inline-block;
-  color: #3182f6;
+  color: var(--primary-color);
   font-weight: 700;
   font-size: 14px;
   margin-bottom: 8px;
@@ -1077,28 +1079,29 @@ const drawRouteTo = async (place) => {
 }
 
 .title-area h1 {
-  font-size: 32px;      /* 요청하신 크기 */
-  font-weight: 800;     /* 요청하신 굵기 */
-  color: #191f28;
+  font-size: 32px;
+  font-weight: 800;
+  /* 텍스트 색상 변수 적용 */
+  color: var(--text-primary);
   margin: 0 0 10px 0;
   line-height: 1.3;
 }
 
 .desc {
-  color: #8b95a1;
+  color: var(--text-secondary);
   font-size: 16px;
   margin: 0;
 }
 
 /* =====================
-   3. 필터 카드
+  3. 필터 카드 (다크모드 대응)
 ===================== */
 .filter-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 24px;
   padding: 28px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 2px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
@@ -1122,42 +1125,49 @@ const drawRouteTo = async (place) => {
   height: 48px;
   padding: 0 16px;
   border-radius: 12px;
-  border: 1px solid #e5e8eb;
-  background-color: #fff;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
   font-size: 15px;
-  color: #333;
+  color: var(--text-primary);
   min-width: 140px;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
 }
 
 .filter-card select:focus {
-  border-color: #3182f6;
+  border-color: var(--primary-color);
 }
 
 .search-btn {
   height: 48px;
   padding: 0 32px;
   border-radius: 12px;
-  background-color: #3182f6;
+  /* 버튼은 아까 맞춘 톤다운 블루 적용 */
+  background-color: #4a86e8;
   color: white;
   border: none;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 4px 10px rgba(49, 130, 246, 0.2);
+  box-shadow: 0 4px 10px rgba(74, 134, 232, 0.2);
+}
+
+/* 검색 버튼 다크모드 전용 */
+:global([data-theme="dark"]) .search-btn {
+  background-color: #14428b;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .search-btn:hover {
-  background-color: #1b64da;
+  filter: brightness(0.9);
   transform: translateY(-2px);
 }
 
 .divider {
   height: 1px;
-  background-color: #f2f4f6;
+  background-color: var(--border-color);
   width: 100%;
 }
 
@@ -1170,7 +1180,7 @@ const drawRouteTo = async (place) => {
 .banks-label {
   font-size: 14px;
   font-weight: 700;
-  color: #4e5968;
+  color: var(--text-secondary);
 }
 
 .banks-grid {
@@ -1182,9 +1192,9 @@ const drawRouteTo = async (place) => {
 .bank-chip {
   padding: 8px 16px;
   border-radius: 20px;
-  border: 1px solid #e5e8eb;
-  background: #fff;
-  color: #4e5968;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -1192,18 +1202,18 @@ const drawRouteTo = async (place) => {
 }
 
 .bank-chip:hover {
-  background-color: #f9fafb;
+  background-color: var(--bg-hover);
 }
 
 .bank-chip.active {
-  background-color: #e8f3ff;
-  color: #3182f6;
-  border-color: #3182f6;
+  background-color: var(--bg-badge);
+  color: #4a86e8;
+  border-color: #4a86e8;
   font-weight: 700;
 }
 
 /* =====================
-   4. 컨텐츠 (지도 + 리스트)
+  4. 컨텐츠 (지도 + 리스트)
 ===================== */
 .content-grid {
   display: flex;
@@ -1216,8 +1226,8 @@ const drawRouteTo = async (place) => {
   position: relative;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 2px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
 }
 
 .map { width: 100%; height: 100%; }
@@ -1226,30 +1236,33 @@ const drawRouteTo = async (place) => {
   position: absolute;
   top: 20px; right: 20px; z-index: 20;
   width: 44px; height: 44px;
-  background: white; border: none; border-radius: 12px;
+  background: var(--bg-card); 
+  border: 1px solid var(--border-color); 
+  border-radius: 12px;
   cursor: pointer; font-size: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px var(--shadow-color);
   display: flex; align-items: center; justify-content: center;
+  color: var(--text-primary);
 }
-.loc-btn:hover { background-color: #f9fafb; }
+.loc-btn:hover { background-color: var(--bg-hover); }
 
 .list-wrapper {
   flex: 1;
-  background: white;
+  background: var(--bg-card);
   border-radius: 24px;
   padding: 24px;
   overflow-y: auto;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 2px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
   display: flex; flex-direction: column;
 }
 
 .list-header h3 {
-  font-size: 18px; font-weight: 800; color: #191f28; margin-bottom: 20px;
+  font-size: 18px; font-weight: 800; color: var(--text-primary); margin-bottom: 20px;
 }
 
-.count { color: #3182f6; }
-.loading-text { font-size: 14px; color: #8b95a1; font-weight: normal; }
+.count { color: #4a86e8; }
+.loading-text { font-size: 14px; color: var(--text-muted); font-weight: normal; }
 
 .place-list {
   list-style: none; padding: 0; margin: 0;
@@ -1258,48 +1271,105 @@ const drawRouteTo = async (place) => {
 
 .place-item {
   padding: 16px; border-radius: 16px;
-  background-color: #fff; border: 1px solid #f2f4f6;
+  background-color: var(--bg-card); 
+  border: 1px solid var(--border-color);
   cursor: pointer; display: flex; justify-content: space-between; align-items: center;
   transition: all 0.2s;
 }
 
 .place-item:hover {
-  background-color: #f9fafb;
-  border-color: rgba(49, 130, 246, 0.3);
+  background-color: var(--bg-hover);
+  border-color: #4a86e8;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .place-info { flex: 1; }
 
 .place-title {
-  font-size: 16px; font-weight: 700; color: #191f28;
+  font-size: 16px; font-weight: 700; color: var(--text-primary);
   display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
 }
 
 .idx {
-  width: 20px; height: 20px; background: #3182f6; color: white;
+  width: 20px; height: 20px; background: #4a86e8; color: white;
   border-radius: 50%; font-size: 11px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 
-.place-addr { font-size: 13px; color: #8b95a1; margin-left: 28px; }
-.place-phone { font-size: 13px; color: #3182f6; margin-left: 28px; margin-top: 2px; }
+.place-addr { font-size: 13px; color: var(--text-secondary); margin-left: 28px; }
+.place-phone { font-size: 13px; color: #4a86e8; margin-left: 28px; margin-top: 2px; }
 
 .route-btn {
-  padding: 6px 12px; border-radius: 8px; background-color: #e8f3ff;
-  color: #3182f6; border: none; font-size: 12px; font-weight: 700; cursor: pointer;
+  padding: 6px 12px; border-radius: 8px; background-color: var(--bg-badge);
+  color: #4a86e8; border: none; font-size: 12px; font-weight: 700; cursor: pointer;
   white-space: nowrap;
 }
-.route-btn:hover { background-color: #dbeaff; }
+.route-btn:hover { filter: brightness(0.95); }
 
 .empty-state {
   margin-top: auto; margin-bottom: auto;
-  text-align: center; color: #8b95a1;
+  text-align: center; color: var(--text-muted);
 }
 .empty-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
 
 /* 스크롤바 커스텀 */
 .list-wrapper::-webkit-scrollbar { width: 6px; }
-.list-wrapper::-webkit-scrollbar-thumb { background-color: #e5e8eb; border-radius: 3px; }
+.list-wrapper::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 3px; }
+
+/* =====================
+  5. 지도 커스텀 오버레이 (다크모드 강제 적용 필요)
+===================== */
+.custom-overlay-style {
+  position: relative;
+  bottom: 45px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  display: inline-block; 
+  white-space: nowrap;
+  text-align: center;
+}
+
+.custom-overlay-style .title {
+  display: block;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+
+.custom-overlay-style .info {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* 말풍선 꼬리 */
+.custom-overlay-style::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 8px 0;
+  border-style: solid;
+  border-color: var(--bg-card) transparent transparent transparent;
+  z-index: 1;
+}
+
+.custom-overlay-style::before {
+  content: "";
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 8px 0;
+  border-style: solid;
+  border-color: var(--border-color) transparent transparent transparent;
+  z-index: 0;
+}
 </style>

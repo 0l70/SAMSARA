@@ -153,27 +153,71 @@ const findProduct = (id) => {
 <style scoped>
 .detail-container { max-width: 800px; margin: 60px auto; padding: 0 20px; }
 .header-section { text-align: center; margin-bottom: 40px; }
-.bank-badge { background-color: #e3f2fd; color: #1976d2; font-weight: 700; padding: 8px 16px; border-radius: 20px; }
-.product-title { margin-top: 15px; font-size: 2.2rem; font-weight: 800; color: #111; letter-spacing: -1px; }
 
-.info-card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; margin-bottom: 40px; }
-.info-row { display: flex; padding: 18px 0; border-bottom: 1px solid #f3f4f6; }
-.label { width: 120px; font-weight: 600; color: #8898aa; flex-shrink: 0; }
-.value { color: #2d3748; font-weight: 500; line-height: 1.6; flex: 1; }
-.description { white-space: pre-line; word-break: keep-all; color: #555; }
+.bank-badge { 
+  background-color: var(--bg-badge); 
+  color: #4a86e8; 
+  font-weight: 700; 
+  padding: 8px 16px; 
+  border-radius: 20px; 
+}
+
+.product-title { 
+  margin-top: 15px; 
+  font-size: 2.2rem; 
+  font-weight: 800; 
+  color: var(--text-primary); 
+  letter-spacing: -1px; 
+}
+
+.info-card { 
+  background: var(--bg-card); 
+  border-radius: 20px; 
+  padding: 40px; 
+  box-shadow: 0 10px 30px var(--shadow-color); 
+  border: 1px solid var(--border-color); 
+  margin-bottom: 40px; 
+}
+
+.info-row { display: flex; padding: 18px 0; border-bottom: 1px solid var(--border-color); }
+.label { width: 120px; font-weight: 600; color: var(--text-muted); flex-shrink: 0; }
+.value { color: var(--text-primary); font-weight: 500; line-height: 1.6; flex: 1; }
+.description { white-space: pre-line; word-break: keep-all; color: var(--text-secondary); }
 
 /* ▼ 금리 테이블 스타일 */
-.rate-section { margin: 20px 0 20px 0; background-color: #f8f9fa; padding: 20px; border-radius: 12px; }
-.rate-title { font-size: 1.1rem; font-weight: 700; margin-top: 0px; margin-bottom: 15px; color: #333; }
-.rate-table { width: 100%; border-collapse: collapse; text-align: center; background: white; border-radius: 8px; overflow: hidden; }
-.rate-table th { background-color: #e9ecef; color: #495057; padding: 12px; font-weight: 600; font-size: 0.9rem; }
-.rate-table td { padding: 12px; border-bottom: 1px solid #f1f3f5; color: #333; font-size: 1rem; }
-.rate-table tr:last-child td { border-bottom: none; }
-.highlight { color: #d32f2f; font-weight: 800; } /* 최고 우대금리 강조 */
+.rate-section { 
+  margin: 20px 0; 
+  background-color: var(--bg-body); 
+  padding: 20px; 
+  border-radius: 12px; 
+}
+.rate-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 15px; }
 
-.action-area { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.rate-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  background: var(--bg-card); 
+  border-radius: 8px; 
+  overflow: hidden; 
+}
+.rate-table th { background-color: var(--bg-hover); color: var(--text-secondary); padding: 12px; }
+.rate-table td { padding: 12px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+
+.highlight { color: #ff6b6b; font-weight: 800; }
+
+/* 버튼들을 감싸는 영역 */
+.action-area {
+  display: flex;
+  justify-content: center; /* ✨ 버튼들을 가로 중앙으로 정렬 */
+  align-items: center;     /* 세로 중앙 정렬 */
+  gap: 16px;               /* 버튼 사이 간격 */
+  margin-top: 40px;        /* 카드와의 간격 */
+  width: 100%;             /* 전체 너비 사용 */
+}
+
+/* 버튼 공통 스타일 */
 .btn { 
-  padding: 14px 24px; 
+  padding: 14px 28px; 
   border-radius: 12px; 
   font-weight: 700; 
   font-size: 1rem; 
@@ -183,27 +227,34 @@ const findProduct = (id) => {
   display: inline-flex; 
   align-items: center; 
   justify-content: center;
-  border: none; /* 기본은 테두리 없음 */
+  border: none;
+  min-width: 140px; /* ✨ 버튼들이 너무 작아지지 않게 최소 너비 지정 */
 }
 
-.btn-primary { background-color: #42b983; color: white; }
-.btn-danger { background-color: #ff6b6b; color: white; }
-.btn-bank { background-color: #3b82f6; color: white; }
 
-/* ▼▼▼ [수정됨] 뒤로가기 버튼 스타일 ▼▼▼ */
+/* 뒤로가기 버튼 다크모드 대응 */
 .btn-secondary { 
-  background-color: #ffffff;   /* 배경을 흰색으로 변경 */
-  color: #495057;              /* 글자는 진한 회색 */
-  border: 1px solid #d1d5db;   /* 테두리 추가해서 배경과 구분 */
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+  background-color: var(--bg-hover);
 }
 
-.btn:hover { 
-  transform: translateY(-2px); 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-}
+.btn-bank { background-color: #14428b; color: white; }
+:global([data-theme="light"]) .btn-bank { background-color: #3b82f6; }
 
-/* ... 아래 로딩 스타일 등은 그대로 유지 ... */
-.loading-container { text-align: center; margin-top: 100px; color: #888; }
-.spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #42b983; border-radius: 50%; margin: 0 auto 20px; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+/* 로딩 스타일 */
+.spinner { border: 4px solid var(--border-color); border-top: 4px solid #42b983; }
+/* 반응형: 화면이 작아지면 버튼을 세로로 쌓고 싶을 때 (선택 사항) */
+@media (max-width: 600px) {
+  .action-area {
+    flex-direction: column; /* 모바일에서는 세로로 */
+    gap: 10px;
+  }
+  .btn {
+    width: 100%; /* 모바일에서는 버튼이 꽉 차게 */
+  }
+}
 </style>
