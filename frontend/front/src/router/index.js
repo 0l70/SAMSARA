@@ -14,6 +14,7 @@ import BankView from '../views/BankView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import GoldView from '../views/GoldView.vue'
 import TestView from '../views/TestView.vue'
+import ChatView from '@/views/ChatView.vue'
 
 // 2. [추가] 유튜브 관련 뷰 Import
 import YoutubeSearchView from '@/views/YoutubeSearchView.vue'

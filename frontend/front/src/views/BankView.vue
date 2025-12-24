@@ -1030,8 +1030,8 @@ const drawRouteTo = async (place) => {
     
     infowindow.value.setContent(content)
     infowindow.value.open(map.value, new window.kakao.maps.Marker({
-       position: new window.kakao.maps.LatLng(place.y, place.x), 
-       map: null 
+      position: new window.kakao.maps.LatLng(place.y, place.x), 
+      map: null 
     }))
 
     // 경로가 모두 보이게 지도 범위 조정
@@ -1049,7 +1049,7 @@ const drawRouteTo = async (place) => {
 
 <style scoped>
 /* =====================
-   기본 레이아웃
+  기본 레이아웃
 ===================== */
 .page {
   max-width: 1280px;
@@ -1141,9 +1141,9 @@ const drawRouteTo = async (place) => {
 }
 
 .banks button.active {
-  background: #2563eb;
+  background: #3182f6;
   color: #fff;
-  border-color: #2563eb;
+  border-color: #3182f6;
   font-weight: 600;
 }
 
@@ -1152,14 +1152,14 @@ const drawRouteTo = async (place) => {
   height: 40px;
   padding: 0 24px;
   border-radius: 10px;
-  background: #2563eb;
+  background: #3182f6;
   color: #fff;
   border: none;
   font-weight: 600;
   cursor: pointer;
   font-size: 0.95rem;
 }
-.search:hover { background: #1d4ed8; }
+.search:hover { background: #3666e9; }
 /* =====================
    ✨ 메인 컨텐츠 (지도 + 리스트) ✨
    이 부분이 깨져서 리스트가 안 보였던 것입니다.
@@ -1216,7 +1216,7 @@ const drawRouteTo = async (place) => {
 .loc-btn:hover { background-color: #f3f4f6; }
 
 /* =====================
-   리스트 아이템 스타일
+  리스트 아이템 스타일
 ===================== */
 .list ul { list-style: none; padding: 0; margin: 0; }
 .list li { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
@@ -1224,7 +1224,7 @@ const drawRouteTo = async (place) => {
 
 .title { display: flex; gap: 8px; font-weight: 600; font-size: 0.95rem; }
 .idx {
-  width: 20px; height: 20px; background: #2563eb; color: #fff;
+  width: 20px; height: 20px; background: #3182f6; color: #fff;
   border-radius: 50%; font-size: 0.7rem;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
@@ -1237,7 +1237,7 @@ const drawRouteTo = async (place) => {
   font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: none; color: #fff; cursor: pointer;
 }
 .actions button:first-child { background: #f59e0b; }
-.actions button:last-child { background: #10b981; }
+.actions button:last-child { background: #3182f6; }
 
 .empty { margin-top: 60px; text-align: center; color: #9ca3af; }
 </style>

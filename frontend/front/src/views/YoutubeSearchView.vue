@@ -140,7 +140,7 @@ h1 {
 }
 
 .search-btn {
-  background-color: #42b983; /* 포인트 컬러 */
+  background-color: #3182f6; /* 포인트 컬러 */
   color: white;
   border: none;
   padding: 0 30px;
@@ -151,7 +151,7 @@ h1 {
 }
 
 .search-btn:hover {
-  background-color: #3aa876;
+  background-color: #2372e0;
 }
 
 /* 비디오 그리드 레이아웃 */
