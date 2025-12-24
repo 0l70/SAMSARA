@@ -4,10 +4,19 @@
       <div class="article-header">
         <span class="badge">자유게시판</span>
         <h1 class="title">{{ article.title }}</h1>
+        
         <div class="meta-info">
-          <span class="author">{{ article.username }}</span>
-          <span class="dot">·</span>
-          <span class="date">{{ article.created_at?.substring(0, 10) }}</span>
+          <div class="info-left">
+            <span class="author">{{ article.username }}</span>
+            <span class="dot">·</span>
+            <span class="date">{{ article.created_at?.substring(0, 10) }}</span>
+          </div>
+
+          <div v-if="authStore.username === article.username" class="header-actions">
+            <button @click="goUpdateArticle" class="btn-text">수정</button>
+            <span class="divider-vertical"></span>
+            <button @click="deleteArticle" class="btn-text delete">삭제</button>
+          </div>
         </div>
       </div>
 
@@ -76,11 +85,7 @@
           ← 목록으로
         </button>
         
-        <div v-if="authStore.username === article.username" class="right-btns">
-          <button @click="goUpdateArticle" class="btn-secondary">수정</button>
-          <button @click="deleteArticle" class="btn-danger">삭제</button>
         </div>
-      </div>
     </div>
   </div>
 </template>
@@ -108,9 +113,6 @@ const fetchArticle = () => {
   axios.get(`${API_URL}/api/v1/articles/${route.params.id}/`)
     .then(res => {
       article.value = res.data
-      console.log('게시글 작성자:', article.value.username)
-      console.log('현재 로그인한 사람:', authStore.username)
-      console.log('두 값이 같은가?:', article.value.username === authStore.username)
     })
     .catch(err => { console.log(err) })
 }
@@ -164,7 +166,6 @@ const updateComment = (commentId) => {
   const payload = { commentId: commentId, content: editingContent.value }
   store.updateComment(payload)
     .then(() => {
-      console.log('수정 성공!')
       editingCommentId.value = null
       fetchArticle()
     })
@@ -179,7 +180,21 @@ const updateComment = (commentId) => {
 /* 헤더 */
 .badge { display: inline-block; padding: 6px 12px; background: #e8f3ff; color: #3182f6; border-radius: 8px; font-size: 13px; font-weight: 700; margin-bottom: 12px; }
 .title { font-size: 28px; color: #191f28; margin-bottom: 12px; font-weight: 700; line-height: 1.3; }
-.meta-info { color: #8b95a1; font-size: 15px; display: flex; align-items: center; }
+
+/* ✨ 메타 정보 (작성자, 날짜, 버튼) 스타일 수정 */
+.meta-info { 
+  color: #8b95a1; 
+  font-size: 15px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; /* 양 끝 정렬 */
+}
+.info-left { display: flex; align-items: center; }
+
+/* ✨ 헤더 우측 수정/삭제 버튼 영역 */
+.header-actions { display: flex; align-items: center; margin-left: auto; }
+.divider-vertical { width: 1px; height: 12px; background: #e5e8eb; margin: 0 10px; display: inline-block; }
+
 .dot { margin: 0 8px; }
 
 .divider { height: 1px; background: #f2f4f6; margin: 30px 0; }
@@ -207,9 +222,13 @@ const updateComment = (commentId) => {
 .comment-writer { font-weight: 700; color: #4e5968; font-size: 14px; }
 .comment-text { color: #191f28; font-size: 16px; line-height: 1.5; }
 
-.btn-text { background: none; border: none; color: #8b95a1; font-size: 13px; cursor: pointer; margin-left: 8px; padding: 0; }
+/* 공통 텍스트 버튼 (수정, 삭제 등) */
+.btn-text { background: none; border: none; color: #8b95a1; font-size: 14px; cursor: pointer; padding: 0; transition: color 0.2s; }
 .btn-text:hover { text-decoration: underline; color: #333; }
 .btn-text.delete:hover { color: #e11d48; }
+
+/* 댓글 액션 버튼 간격 */
+.comment-actions .btn-text { margin-left: 8px; font-size: 13px; }
 
 /* 댓글 수정 모드 */
 .comment-edit { width: 100%; }
@@ -222,14 +241,8 @@ const updateComment = (commentId) => {
 .login-plz { color: #8b95a1; text-align: center; margin-bottom: 20px; }
 .login-plz a { color: #3182f6; text-decoration: none; font-weight: 700; }
 
-/* 하단 버튼 그룹 */
-.btn-group { display: flex; justify-content: space-between; margin-top: 50px; align-items: center; }
+/* 하단 버튼 그룹 (이제 목록 버튼만 남음) */
+.btn-group { display: flex; justify-content: flex-start; margin-top: 50px; }
 .btn-back { background: none; border: none; color: #8b95a1; font-size: 16px; font-weight: 600; cursor: pointer; padding: 10px 0; }
 .btn-back:hover { color: #333; }
-
-.right-btns { display: flex; gap: 10px; }
-.btn-secondary { background-color: #f2f4f6; color: #333; border: none; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: 600; }
-.btn-secondary:hover { background-color: #e5e8eb; }
-.btn-danger { background-color: #fff1f1; color: #e11d48; border: none; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: 600; }
-.btn-danger:hover { background-color: #ffe4e4; }
 </style>

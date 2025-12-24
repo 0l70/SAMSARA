@@ -20,26 +20,24 @@
     <nav class="main-nav">
       <div class="nav-left">
         <RouterLink :to="{ name: 'home' }" class="logo">
-          라고 할 때 살걸
+          삼사라
         </RouterLink>
       </div>
 
       <div class="nav-right">
-        
         <div class="nav-group">
           <button 
             class="nav-btn" 
-            :class="{ 'active': isGroupActive(['products', 'BankView']) }"
+            :class="{ 'active': isGroupActive(['products', 'BankView', 'subscription-list']) }"
           >
             금융 상품 <span class="arrow">▼</span>
           </button>
-          
           <div class="dropdown-menu">
             <RouterLink :to="{ name: 'products' }" class="dropdown-item">
               🏦 예적금 비교
             </RouterLink>
             <RouterLink :to="{ name: 'subscription-list' }" class="dropdown-item">
-              📑 가입 리스트
+              📝 가입 리스트
             </RouterLink>
             <RouterLink :to="{ name: 'BankView' }" class="dropdown-item">
               📍 주변 은행 찾기
@@ -98,11 +96,11 @@
 </template>
 
 <script setup>
-import { RouterLink, RouterView, useRoute } from 'vue-router' // useRoute 추가
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const store = useAuthStore()
-const route = useRoute() // 현재 페이지 정보를 담고 있는 객체
+const route = useRoute()
 
 // 현재 페이지 이름(route.name)이, 지정한 그룹 목록(names)에 포함되는지 확인하는 함수
 const isGroupActive = (names) => {
@@ -111,7 +109,17 @@ const isGroupActive = (names) => {
 </script>
 
 <style>
-/* 전역 설정 */
+/* ========================
+   전역 폰트 설정
+   ======================== */
+@font-face {
+    font-family: 'PartialSans';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", Roboto, "Noto Sans KR", sans-serif;
@@ -166,18 +174,23 @@ header {
   padding: 0 20px;
 }
 
+/* ✨ 로고 스타일 수정됨 (폰트 적용) */
 .logo {
-  font-size: 22px;
-  font-weight: 800;
+  font-family: 'PartialSans', sans-serif; /* 폰트 적용 */
+  font-size: 40px; /* 폰트 크기 살짝 키움 */
+  font-weight: normal;
   color: #191f28;
   text-decoration: none;
   letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
 }
 
 .nav-right {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 30px;
 }
 
 .nav-group {
@@ -191,10 +204,12 @@ header {
 .nav-btn, .single-link {
   background: none;
   border: none;
-  font-size: 16px;
+  
+  /* ✨ 크기 변경: 16px -> 18px */
+  font-size: 18px; 
   font-weight: 600;
   color: #4e5968;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -206,7 +221,7 @@ header {
 
 .arrow { font-size: 10px; color: #b0b8c1; transition: transform 0.2s, color 0.2s; }
 
-/* 1. 호버(Hover) 효과: 마우스 올렸을 때 */
+/* 1. 호버(Hover) 효과 */
 .nav-group:hover .nav-btn, 
 .single-link:hover { 
   background-color: rgba(2, 32, 71, 0.05);
@@ -214,16 +229,13 @@ header {
 }
 .nav-group:hover .arrow { transform: rotate(180deg); color: #333d4b; }
 
-/* 2. 활성화(Active) 효과: 현재 페이지가 그룹에 속할 때 
-  (여기가 핵심입니다!) 
-*/
+/* 2. 활성화(Active) 효과 */
 .nav-btn.active, 
 .router-link-active.single-link {
-  color: #3182f6; /* 파란색 글씨 */
-  background-color: rgba(49, 130, 246, 0.08); /* 연한 파란색 배경 */
+  color: #3182f6;
+  background-color: rgba(49, 130, 246, 0.08);
 }
 
-/* 상위 버튼이 활성화되면 화살표 색상도 변경 */
 .nav-btn.active .arrow {
   color: #3182f6; 
 }
@@ -257,14 +269,13 @@ header {
   padding: 12px 16px;
   text-decoration: none;
   color: #4e5968;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   border-radius: 10px;
   margin-bottom: 2px;
   transition: background-color 0.2s, color 0.2s;
 }
 
-/* 현재 페이지와 일치하는 드롭다운 아이템은 글씨를 파랗게 */
 .router-link-active.dropdown-item {
   color: #3182f6;
   font-weight: 700;
@@ -278,7 +289,7 @@ header {
 
 @media (max-width: 768px) {
   .main-nav { padding: 0 16px; }
-  .logo { font-size: 18px; }
+  .logo { font-size: 22px; }
   .nav-btn, .single-link { font-size: 14px; padding: 8px 10px; }
   .nav-right { gap: 2px; }
 }

@@ -14,12 +14,10 @@ import BankView from '../views/BankView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import GoldView from '../views/GoldView.vue'
 import TestView from '../views/TestView.vue'
-import ChatView from '@/views/ChatView.vue'
 
-// 2. [추가] 유튜브 관련 뷰 Import
 import YoutubeSearchView from '@/views/YoutubeSearchView.vue'
-// ⚠️ 중요: 아래 파일이 실제로 만들어져 있어야 에러가 안 납니다!
 import VideoDetailView from '@/views/VideoDetailView.vue' 
+import ChatView from '@/views/ChatView.vue'
 
 import SubscriptionListView from '@/views/SubscriptionListView.vue'
 import ProductDetailView from '@/views/ProductDetailView.vue'
@@ -92,6 +90,11 @@ const router = createRouter({
       path: '/test',
       name: 'test',
       component: TestView
+    },
+    {
+      path: '/chatbot',
+      name: 'chatbot',
+      component: ChatView
     },
   // ▼▼▼ [유튜브 관련 라우터] ▼▼▼
     {

@@ -172,14 +172,37 @@ const findProduct = (id) => {
 .highlight { color: #d32f2f; font-weight: 800; } /* 최고 우대금리 강조 */
 
 .action-area { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
-.btn { padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;}
+.btn { 
+  padding: 14px 24px; 
+  border-radius: 12px; 
+  font-weight: 700; 
+  font-size: 1rem; 
+  cursor: pointer; 
+  transition: all 0.2s; 
+  text-decoration: none; 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  border: none; /* 기본은 테두리 없음 */
+}
 
 .btn-primary { background-color: #42b983; color: white; }
 .btn-danger { background-color: #ff6b6b; color: white; }
 .btn-bank { background-color: #3b82f6; color: white; }
-.btn-secondary { background-color: #f1f3f5; color: #495057; }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
+/* ▼▼▼ [수정됨] 뒤로가기 버튼 스타일 ▼▼▼ */
+.btn-secondary { 
+  background-color: #ffffff;   /* 배경을 흰색으로 변경 */
+  color: #495057;              /* 글자는 진한 회색 */
+  border: 1px solid #d1d5db;   /* 테두리 추가해서 배경과 구분 */
+}
+
+.btn:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+}
+
+/* ... 아래 로딩 스타일 등은 그대로 유지 ... */
 .loading-container { text-align: center; margin-top: 100px; color: #888; }
 .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #42b983; border-radius: 50%; margin: 0 auto 20px; animation: spin 1s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
