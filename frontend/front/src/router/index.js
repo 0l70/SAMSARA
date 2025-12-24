@@ -21,6 +21,10 @@ import YoutubeSearchView from '@/views/YoutubeSearchView.vue'
 // ⚠️ 중요: 아래 파일이 실제로 만들어져 있어야 에러가 안 납니다!
 import VideoDetailView from '@/views/VideoDetailView.vue' 
 
+import SubscriptionListView from '@/views/SubscriptionListView.vue'
+import ProductDetailView from '@/views/ProductDetailView.vue'
+import DepositView from '@/views/DepositView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -101,11 +105,20 @@ const router = createRouter({
       component: VideoDetailView
     },
     {
-      path: '/chat',
-      name: 'chatbot',  // 
-      component: ChatView
+      path: '/joined-products',
+      name: 'subscription-list',
+      component: SubscriptionListView
     },
-
+    {
+      path: '/deposit',
+      name: 'deposit',
+      component: DepositView
+    },
+    {
+      path: '/products/:id', // id 파라미터 필요
+      name: 'product-detail',
+      component: ProductDetailView
+    },
   ]
 })
 

@@ -38,6 +38,9 @@
             <RouterLink :to="{ name: 'products' }" class="dropdown-item">
               🏦 예적금 비교
             </RouterLink>
+            <RouterLink :to="{ name: 'subscription-list' }" class="dropdown-item">
+              📑 가입 리스트
+            </RouterLink>
             <RouterLink :to="{ name: 'BankView' }" class="dropdown-item">
               📍 주변 은행 찾기
             </RouterLink>
