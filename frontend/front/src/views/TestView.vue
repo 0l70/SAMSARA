@@ -58,13 +58,13 @@
       <p class="result-desc">{{ result.desc }}</p>
 
       <div class="recommend-box">
-        <h3>💡 FinBot의 제안</h3>
+        <h3>FinBot의 제안</h3>
         <p>{{ result.advice }}</p>
       </div>
 
       <div class="action-buttons">
         <button class="primary-btn" @click="handleResultAction">
-          {{ store.token ? '결과 저장하고 AI 비서와 상담하기 🤖' : '나에게 딱 맞는 상품 추천받기 (가입) 🎁' }}
+          {{ store.token ? '결과 저장하고 AI 비서와 상담하기' : '나에게 딱 맞는 상품 추천받기 (가입)' }}
         </button>
         
         <button class="retry-btn" @click="resetTest">다시 하기</button>
@@ -273,24 +273,63 @@ const handleResultAction = async () => {
 /* =====================
   6. 하단 액션 버튼
 ===================== */
-.start-btn { width: 100%; padding: 16px; font-size: 1.2rem; font-weight: 700; background: #3b82f6; color: white; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
-.start-btn:hover { background: #2563eb; }
+/* =====================
+  6. 하단 액션 버튼 (토스 블루 적용)
+===================== */
+.start-btn { 
+  width: 100%; 
+  padding: 16px; 
+  font-size: 1.2rem; 
+  font-weight: 700; 
+  background: #3182f6; /* 토스 공식 블루 */
+  color: white; 
+  border: none; 
+  border-radius: 12px; 
+  cursor: pointer; 
+  transition: background 0.2s; 
+}
+.start-btn:hover { background: #1b64da; }
 
+/* 초록색이었던 부분 -> 토스 블루로 변경 */
 .primary-btn { 
   width: 100%; 
   padding: 16px; 
   font-size: 1.1rem; 
   font-weight: 700; 
-  background: #10b981; 
+  background: #3182f6; /* #10b981(초록)에서 변경 */
   color: white; 
   border: none; 
   border-radius: 12px; 
   cursor: pointer; 
   margin-bottom: 10px; 
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); 
+  /* 그림자 색상도 블루 톤으로 변경 */
+  box-shadow: 0 4px 12px rgba(49, 130, 246, 0.3); 
+  transition: all 0.2s ease;
 }
-.primary-btn:hover { background: #059669; }
 
+.primary-btn:hover { 
+  background: #1b64da; /* #059669(진한초록)에서 변경 */
+  transform: translateY(-1px);
+}
+
+/* 결과 제목 색상 강조 */
+.result-title { 
+  font-size: 2rem; 
+  font-weight: 900; 
+  color: #3182f6; /* 조금 더 쨍한 토스 블루 */
+  margin-bottom: 20px; 
+}
+
+/* 선택지 버튼 호버 색상 통일 */
+.choice-btn:hover { 
+  border-color: #3182f6; 
+  background: var(--bg-badge); 
+  color: #3182f6; 
+}
+.choice-btn:hover .label { background: #3182f6; color: white; }
+
+/* 진행바 색상 */
+.fill { height: 100%; background: #3182f6; transition: width 0.3s ease; }
 .retry-btn { 
   width: 100%; 
   padding: 14px; 

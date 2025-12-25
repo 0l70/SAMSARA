@@ -127,7 +127,16 @@ const router = createRouter({
       name: 'chatbot',
       component: ChatView
     },
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    // 사용자가 뒤로가기/앞으로가기를 눌렀을 때는 이전 스크롤 위치를 유지
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      // 새 페이지로 이동할 때는 항상 맨 위로 (x:0, y:0)
+      return { top: 0 }
+    }
+  }
 })
 
 export default router

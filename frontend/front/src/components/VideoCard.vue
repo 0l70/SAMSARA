@@ -44,10 +44,10 @@ const goDetail = () => {
 
 <style scoped>
 .video-card {
-  background: white;
+  background-color: var(--bg-card);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px var(--shadow-color);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
   display: flex;
@@ -56,8 +56,8 @@ const goDetail = () => {
 }
 
 .video-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px var(--shadow-color);
 }
 
 .thumbnail-wrapper {
@@ -81,6 +81,7 @@ const goDetail = () => {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  background-color: var(--bg-card);
 }
 
 .title {
@@ -88,25 +89,39 @@ const goDetail = () => {
   font-weight: 600;
   margin: 0 0 10px;
   line-height: 1.4;
-  color: #333;
-  
-  /* 2줄 이상 넘어가면 ... 처리 */
+  color: var(--text-primary);
+
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+
 .meta {
-  margin-top: auto; /* 아래로 밀기 */
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .channel {
   font-weight: 500;
-  color: #555;
+  color: var(--text-secondary);
 }
+
+[data-theme="dark"] .video-card {
+  background-color: #1f2937;
+}
+
+[data-theme="dark"] .title {
+  color: #f9fafb;
+}
+
+[data-theme="dark"] .meta,
+[data-theme="dark"] .channel {
+  color: #d1d5db;
+}
+
 </style>

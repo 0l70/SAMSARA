@@ -352,6 +352,7 @@ const shouldShowDate = (idx) => idx === 0 || new Date(messages.value[idx].create
   font-weight: 500;
   text-align: right;
   line-height: 1.2;
+  padding: 10px 0px 5px;
 }
 
 /* ----------------------------------------------------
@@ -415,7 +416,7 @@ const shouldShowDate = (idx) => idx === 0 || new Date(messages.value[idx].create
    Input Area
 ---------------------------------------------------- */
 .input-area {
-  padding: 10px 16px 20px 16px;
+  padding: 10px 16px 10px 16px;
   background-color: #F2F2F7;
   border-top: 1px solid rgba(0,0,0,0.1);
   flex-shrink: 0;
@@ -543,7 +544,7 @@ input {
 .ios-frame.dark .back-btn { color: #0A84FF; }
 
 /* Chat Area */
-.ios-frame.dark .chat-container { background-color: #000000; }
+.ios-frame.dark .chat-container { background-color: #131313; }
 .ios-frame.dark .message-row.ai .message-bubble { background-color: #262628; color: #FFF; }
 .ios-frame.dark .message-row.user .message-bubble { background-color: #0A84FF; }
 .ios-frame.dark .date-divider { background-color: rgba(255,255,255,0.15); color: #AEAEB2; }

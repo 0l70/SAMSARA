@@ -396,6 +396,19 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   --primary: #3b82f6;
 }
 
+/* ===============================
+   🌙 Dark Mode Variables
+   =============================== */
+[data-theme="dark"] {
+  --bg-card: #1e293b;        /* 카드 배경 */
+  --text-primary: #e5e7eb;   /* 메인 텍스트 */
+  --text-secondary: #cbd5f5; /* 서브 텍스트 */
+  --text-muted: #94a3b8;
+  --bg-hover: #334155;
+  --border-color: #334155;
+  --primary: #60a5fa;
+}
+
 .home-container {
   max-width: 1000px; margin: 0 auto; padding: 40px 20px 80px;
   font-family: 'Pretendard', sans-serif; color: var(--text-primary);
@@ -432,6 +445,194 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 .card-header h3 { font-size: 1.1rem; font-weight: 700; margin: 0; }
 .header-title-box { display: flex; align-items: center; gap: 8px; }
 .header-icon { color: var(--text-secondary); }
+
+[data-theme="dark"] .card:hover {
+  background-color: #243047;
+}
+
+[data-theme="dark"] .menu-item:hover,
+[data-theme="dark"] .preview-item:hover {
+  background-color: var(--bg-hover);
+}
+
+[data-theme="dark"] .sub-item {
+  background-color: #1f2937;
+}
+
+[data-theme="dark"] .news-text {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .news-link:hover .news-text {
+  color: var(--primary);
+}
+
+[data-theme="dark"] .clock-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+[data-theme="dark"] .tip-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .tip-text {
+  color: #facc15;
+}
+
+[data-theme="dark"] .blur-content {
+  background: rgba(15, 23, 42, 0.7);
+  color: var(--text-primary);
+}
+
+/* 🌙 Dark Mode - Welcome Text */
+[data-theme="dark"] .welcome-text {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .highlight-name {
+  color: var(--primary);
+}
+
+/* 🌙 Dark Mode - News Card Title */
+[data-theme="dark"] .news-card .header-title-box h3 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .news-card .header-icon {
+  color: var(--text-secondary);
+}
+
+
+/* 🌙 Dark Mode - Subscription Card */
+[data-theme="dark"] .subscription-card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+/* 내부 리스트 */
+[data-theme="dark"] .subscription-card .preview-item {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+
+[data-theme="dark"] .subscription-card .preview-item:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* 🌙 Dark Mode - Subscription Count Badge */
+[data-theme="dark"] .subscription-card .count-badge {
+  color: #020617;                 /* 거의 검정 */
+  background-color: #e5e7eb;      /* 연한 회색 */
+  border: none;
+  box-shadow: none;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* 은행명 */
+[data-theme="dark"] .subscription-card .preview-bank {
+  display: inline;
+  color: #94a3b8;      /* slate-400 */
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* 🌙 Dark Mode - Remove Bank Badge Style */
+[data-theme="dark"] .subscription-card .preview-bank {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+/* 상품명 */
+[data-theme="dark"] .subscription-card .preview-name {
+  color: #e5e7eb; /* gray-200 */
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* 금리 */
+[data-theme="dark"] .subscription-card .sub-rate {
+  color: #c7d2fe; /* indigo-200 */
+  font-weight: 600;
+}
+
+/* 🌙 Dark Mode - Icons */
+[data-theme="dark"] .icon,
+[data-theme="dark"] i,
+[data-theme="dark"] svg {
+  color: var(--text-secondary);
+  fill: var(--text-secondary);
+}
+
+[data-theme="dark"] .icon-primary {
+  color: var(--primary);
+  fill: var(--primary);
+}
+
+/* 🌙 Dark Mode - Empty Illustration */
+[data-theme="dark"] .empty-illustration {
+  opacity: 0.75;
+  filter: brightness(0.9) contrast(1.1);
+}
+
+[data-theme="dark"] .login-empty {
+  background: linear-gradient(
+    135deg,
+    #0f172a,
+    #020617
+  );
+}
+
+/* 🌙 Dark Mode - Subscription Card Header */
+[data-theme="dark"] .subscription-card .card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .subscription-card .card-header h3 {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* 아이콘 */
+[data-theme="dark"] .subscription-card .card-header svg,
+[data-theme="dark"] .subscription-card .card-header i {
+  color: #9ca3af; /* text-muted 톤 */
+  fill: #9ca3af;
+}
+
+/* 🌙 Dark Mode - Subscription Item Icon (No Background) */
+[data-theme="dark"] .subscription-card .preview-icon {
+  background: none;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+
+[data-theme="dark"] .subscription-card .preview-icon svg,
+[data-theme="dark"] .subscription-card .preview-icon i {
+  color: var(--text-secondary);
+  fill: var(--text-secondary);
+  width: 18px;
+  height: 18px;
+}
+
+/* 🌙 Dark Mode - Blur Content matches Card */
+[data-theme="dark"] .subscription-card .blur-content {
+  background: var(--bg-card);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  opacity: 0.9;
+  border: 1px solid var(--border-color);
+}
+
 
 /* 1. Profile Card */
 .profile-card { grid-column: span 1; justify-content: center; align-items: center; text-align: center; }
@@ -681,15 +882,30 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   gap: 12px;
 }
 
+/* 아이콘을 감싸는 박스의 배경과 크기 제한을 제거합니다 */
 .header-icon-wrapper {
-  width: 36px;
-  height: 36px;
-  background: #f2f4f6;
-  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4e5968;
+  background: none !important; /* 배경 제거 */
+  width: auto !important;      /* 고정 너비 제거 */
+  height: auto !important;     /* 고정 높이 제거 */
+  color: var(--text-secondary); /* 아이콘 색상을 텍스트와 맞춤 */
+  padding: 0;                  /* 여백 제거 */
+}
+
+/* 아이콘 크기 조절 (원하는 경우) */
+.header-icon-wrapper svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--text-secondary); /* 다크모드 변수와 연동 */
+}
+
+/* 제목(h3)과의 간격 조정 */
+.header-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 아이콘과 글자 사이 간격 */
 }
 
 .header-title-box h3 {
@@ -776,13 +992,141 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 .btn-text { background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; margin-top: 5px; font-size: 0.95rem; }
 
 /* Blur Overlay */
-.blur-overlay-container { position: relative; height: 100%; overflow: hidden; border-radius: 12px; }
-.blur-content { 
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
-  background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(5px);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+/* 1. 블러 컨테이너: 부모 카드의 곡률을 그대로 상속받아 삐져나오지 않게 함 */
+.blur-overlay-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: inherit; /* 부모(card)의 border-radius를 그대로 따라감 */
 }
-.lock-icon-box { width: 50px; height: 50px; background: rgba(0,0,0,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--text-secondary); }
+
+/* 2. 블러 레이어: 테두리 잔상을 없애고 색상 최적화 */
+.blur-content { 
+  position: absolute;
+  /* top, left 대신 inset 사용으로 더 정확한 밀착 */
+  inset: 0; 
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: none; /* 혹시 모를 테두리 제거 */
+  
+  /* 블러 강도와 색상 - 라이트 모드 기본 */
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.5);
+  transition: background-color 0.3s ease;
+}
+
+/* 3. ✨ 다크모드 블러 최적화: 카드 배경색과 유사한 톤으로 설정 */
+[data-theme="dark"] .blur-content {
+  /* 카드 배경(#1e1e1e)과 어우러지도록 어두운 톤 적용 */
+  background: rgba(30, 30, 30, 0.75); 
+  backdrop-filter: blur(10px); /* 다크모드에서 블러를 살짝 더 강하게 주면 고급스러움 */
+}
+
+/* 4. 뒤에 비치는 더미 아이템들 테두리 제거 (블러 너머로 보이지 않게) */
+.dummy .sub-item {
+  border: none !important;
+  background-color: var(--bg-hover) !important;
+  opacity: 0.2; /* 더 연하게 처리해서 거슬림 방지 */
+}
+
+/* [1] 구독 상품 카드 - 테두리 제거 및 호버 효과 수정 */
+.subscription-card {
+  position: relative;
+  background-color: var(--bg-card);
+  /* 테두리 아예 제거 */
+  border: none !important; 
+  border-radius: 24px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  /* 선 대신 부드러운 그림자로 카드 구분 */
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+/* 마우스 올릴 때: 테두리 없이 배경색만 파랗게 */
+.subscription-card:hover {
+  transform: translateY(-4px);
+  /* 테두리 변경 코드 삭제 */
+  background-color: rgba(49, 130, 246, 0.06); 
+  box-shadow: 0 12px 24px var(--shadow-color);
+}
+
+/* 다크모드 호버 시 */
+[data-theme="dark"] .subscription-card:hover {
+  background-color: rgba(49, 130, 246, 0.12);
+}
+
+/* [2] 블러 영역 - 테두리 잔상 절대 안 생기게 수정 */
+.blur-overlay-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+  /* 테두리가 없으므로 마진 필요 없음 */
+  margin: 0; 
+}
+
+.blur-content {
+  position: absolute;
+  /* 정확히 0으로 맞춰서 테두리 효과 방지 */
+  inset: 0; 
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /* 선 생기지 않도록 강제 적용 */
+  border: none !important;
+  outline: none !important;
+  
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+/* 다크모드 블러 배경색 */
+[data-theme="dark"] .blur-content {
+  background: rgba(30, 30, 30, 0.7);
+}
+
+/* 카드 호버 시 블러 레이어도 푸른빛 가미 */
+.subscription-card:hover .blur-content {
+  background: rgba(49, 130, 246, 0.08);
+}
+
+[data-theme="dark"] .subscription-card:hover .blur-content {
+  background: rgba(30, 38, 52, 0.8);
+}
+
+/* 잠금 아이콘 박스 - 여기도 테두리 제거 */
+.lock-icon-box {
+  width: 50px;
+  height: 50px;
+  background: var(--bg-hover);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  /* 아이콘 박스 테두리도 제거하여 일체감 형성 */
+  border: none !important;
+}
+
+/* 호버 시 잠금 아이콘만 색상 변경 */
+.subscription-card:hover .lock-icon-box {
+  color: var(--primary);
+  background: var(--bg-card);
+}
+
 .blur-content p { font-weight: 700; color: var(--text-primary); margin: 0; font-size: 1.05rem; line-height: 1.5; }
 .dummy .sub-item { opacity: 0.3; border-color: transparent; background: #f9fafb; cursor: default; pointer-events: none; }
 .dummy-bar { background: #e5e7eb; border-radius: 4px; height: 14px; }
@@ -794,10 +1138,44 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 .live-badge { background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; animation: pulse 2s infinite; }
 .loading-state { text-align: center; color: var(--text-muted); margin-top: 40px; }
 .news-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; flex: 1; }
-.news-link { text-decoration: none; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.news-link { color: inherit; text-decoration: none; }
 .news-text { color: var(--text-primary); font-size: 0.95rem; line-height: 1.4; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .news-link:hover .news-text { color: var(--primary); text-decoration: underline; }
 .news-ago { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; margin-top: 2px; }
+/* 📰 News Card Hover - Modern */
+.news-item {
+  transition: 
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+.news-link:hover,
+.news-link:active,
+.news-link:focus,
+.news-link:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+.news-item:hover {
+  transform: translateY(-2px);
+  background-color: var(--bg-hover);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-left: none !important;
+  border-bottom: none !important;
+}
+
+[data-theme="dark"] .news-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+}
+.news-item:hover::before {
+  opacity: 1;
+}
+.news-item::before {
+  display: none !important;
+}
+
 
 /* 6. Tip Card */
 .full-width { grid-column: span 3; background: #fffbeb; border: 1px solid #fcd34d; padding: 16px 24px; min-height: auto; flex-direction: row; align-items: center; }
@@ -979,5 +1357,25 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 /* 텍스트 정리 */
 .welcome-text { margin: 0; font-size: 1.5rem; }
 .sub-text { margin-top: 5px; color: #6b7280; font-size: 0.95rem; }
+/* 📰 News Card - Clean Hover Only */
+.news-item {
+  position: relative;
+  border: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.news-item::before,
+.news-item::after {
+  display: none !important;
+}
+
+.news-item:hover {
+  transform: translateY(-2px);
+  background-color: var(--bg-hover);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
 
 </style>

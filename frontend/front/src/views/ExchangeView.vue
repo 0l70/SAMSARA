@@ -691,4 +691,26 @@ const chartOptions = {
   color: var(--primary-color);
   font-weight: 700;
 }
+
+/* 🌙 Dark Mode - Rate Info Block */
+[data-theme="dark"] .rate-info {
+  color: #e5e7eb; /* gray-200 */
+  line-height: 1.6;
+  background-color: #111827; /* slate-900 */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+
+/* 아이콘 */
+[data-theme="dark"] .rate-info .info-icon {
+  color: #cbd5e1; /* slate-300 */
+}
+
+/* 날짜 (inline style 덮어쓰기) */
+[data-theme="dark"] .rate-info span {
+  color: #94a3b8 !important; /* slate-400 */
+}
+
 </style>
