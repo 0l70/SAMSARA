@@ -62,15 +62,24 @@
       <h3>로그인</h3>
       <p>서비스 이용을 위해 로그인해주세요</p>
     </div>
+    
     <form @submit.prevent="handleLogin" class="login-form">
       <input v-model="loginData.username" type="text" placeholder="아이디" required class="login-input" />
       <input v-model="loginData.password" type="password" placeholder="비밀번호" required class="login-input" />
+      
       <button type="submit" class="btn-login-action">로그인 하기</button>
-    </form>
+
+      <div class="divider">
+        <span>또는</span>
+      </div>
+      <KakaoLogin /> 
+      </form>
+    
     <div class="login-footer">
       <span @click="router.push({ name: 'signup' })" class="link-text">회원가입 하러가기</span>
     </div>
   </div>
+
 </div>
 
       <div class="card clock-card">
@@ -197,6 +206,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useFinanceStore } from '@/stores/finance'
 import axios from 'axios'
+import KakaoLogin from '@/components/KakaoLogin.vue'
 
 const router = useRouter()
 const store = useAuthStore()
@@ -1376,6 +1386,28 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   transform: translateY(-2px);
   background-color: var(--bg-hover);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 10px 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.divider span {
+  padding: 0 10px;
+  font-weight: 500;
 }
 
 </style>

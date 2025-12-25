@@ -221,7 +221,7 @@ onMounted(async () => {
       
       if (userInfo.value.is_mydata_agreed) {
         // [True] 동의 상태: 바로 맞춤 추천 시작 멘트
-        welcomeMsg = `안녕하세요 ${userInfo.value.nickname}님! \n\n마이데이터 연동이 확인되었습니다. 🙆🏻‍♂️\n**${userInfo.value.mbti || '고객'}**님의 투자 성향과 자산 정보를 바탕으로, 딱 맞는 예적금/펀드 상품을 바로 추천해드릴 수 있어요.\n\n무엇을 찾아드릴까요?`
+        welcomeMsg = `안녕하세요 ${userInfo.value.nickname}님! \n\n마이데이터 연동이 확인되었습니다. 고객님의 투자 성향과 자산 정보를 바탕으로, 딱 맞는 예적금/펀드 상품을 바로 추천해드릴 수 있어요.\n\n무엇을 찾아드릴까요?`
       } else {
         // [False] 미동의 상태: 동의 권유 멘트
         welcomeMsg = `안녕하세요 ${userInfo.value.nickname}님! FinBot입니다. 🤖\n\n현재 **마이데이터 미동의** 상태라 일반적인 인기 상품 위주로만 추천해드릴 수 있어요.\n\n더 정확한 맞춤 추천과 수익률 계산을 원하시면 마이데이터 제공에 동의해주세요.`

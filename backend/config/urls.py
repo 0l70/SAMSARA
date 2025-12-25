@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from accounts import views as accounts_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +26,5 @@ urlpatterns = [
     path('api/v1/exchange/', include('exchange.urls')),
     path('api/v1/articles/', include('articles.urls')),
     path('api/v1/chatbot/', include('chatbot.urls')),
+    path('api/v1/accounts/kakao/', accounts_views.kakao_login, name='kakao_login'),
 ]
