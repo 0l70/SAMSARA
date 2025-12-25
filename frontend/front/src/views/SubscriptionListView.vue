@@ -180,6 +180,7 @@ const goDetail = (id) => {
   color: var(--text-muted);
   font-weight: 500;
   transition: color 0.2s;
+  padding-left: 10px;
 }
 
 .product-card:hover .detail-link {

@@ -5,7 +5,7 @@
       <div class="header-group">
         <div class="text-group">
           <span class="badge">Community</span>
-          <h1>자유 게시판</h1>
+            <h1>자유 게시판</h1>
           <p class="subtitle">다양한 금융 이야기를 자유롭게 나눠보세요.</p>
         </div>
         <a href="#" class="btn-create" @click.prevent="goCreateArticle">

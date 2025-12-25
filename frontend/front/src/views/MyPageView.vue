@@ -5,7 +5,13 @@
       <p class="subtitle">내 정보를 확인하고 수정할 수 있습니다.</p>
 
       <form @submit.prevent="updateProfile">
-        <h3 class="section-title">👤 내 정보 수정</h3>
+        <h3 class="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          내 정보 수정
+        </h3>
 
         <div class="row">
           <div class="form-group">
@@ -85,7 +91,20 @@
 
       <div class="password-section">
         <button type="button" @click="showPasswordForm = !showPasswordForm" class="toggle-btn">
-          🔒 비밀번호 변경하기 {{ showPasswordForm ? '▲' : '▼' }}
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg">
+              <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            비밀번호 변경하기
+          </span>
+          
+          <svg v-if="showPasswordForm" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
         </button>
 
         <form v-if="showPasswordForm" @submit.prevent="changePassword" class="password-form">
@@ -377,5 +396,25 @@ input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* 아이콘 SVG 공통 스타일 */
+.icon-svg {
+  vertical-align: text-bottom; /* 텍스트와 높이 맞춤 */
+  margin-right: 4px;           /* 텍스트와의 간격 */
+  color: inherit;              /* 부모 요소 색상 상속 */
+}
+
+/* 섹션 타이틀 아이콘 정렬 */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* 아이콘과 타이틀 간격 */
+}
+
+/* 비밀번호 토글 버튼 내부 정렬 보완 */
+.toggle-btn {
+  /* 기존 코드에 display: flex; 가 있어서 잘 정렬되지만 확실하게 하기 위함 */
+  align-items: center; 
 }
 </style>
