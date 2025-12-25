@@ -30,6 +30,8 @@
 
         <button type="submit" class="btn-submit">로그인</button>
       </form>
+      <div class="divider">또는</div>
+      <KakaoLogin />
     </div>
   </div>
 </template>
@@ -38,6 +40,7 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router' // 1. 라우터 import 추가
+import KakaoLogin from '@/components/KakaoLogin.vue'
 
 const store = useAuthStore()
 const router = useRouter() // 2. 라우터 사용 설정
@@ -154,4 +157,12 @@ input::placeholder {
 .btn-submit:hover {
   background-color: #3b82f6;
 }
+
+.divider { 
+  margin: 20px 0; 
+  color: #888; 
+  text-align: center; /* ★ 이 줄 추가! 글자를 가운데로 */
+  font-size: 14px;
+}
+
 </style>

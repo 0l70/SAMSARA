@@ -22,6 +22,7 @@ import ChatView from '@/views/ChatView.vue'
 import SubscriptionListView from '@/views/SubscriptionListView.vue'
 import ProductDetailView from '@/views/ProductDetailView.vue'
 import DepositView from '@/views/DepositView.vue'
+import KakaoCallbackView from '@/views/KakaoCallbackView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -126,6 +127,11 @@ const router = createRouter({
       path: '/chat',
       name: 'chatbot',
       component: ChatView
+    },
+    {
+      path: '/oauth/callback/kakao', 
+      name: 'kakao-callback',
+      component: KakaoCallbackView
     },
   ],
   scrollBehavior(to, from, savedPosition) {

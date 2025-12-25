@@ -828,7 +828,7 @@ onMounted(() => {
   } else {
     const script = document.createElement('script')
     // ❗ 본인의 JS 키로 교체 필요
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${KAKAO_JS_KEY}&libraries=services`
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${KAKAO_JS_KEY}&libraries=services`
     document.head.appendChild(script)
     script.onload = () => window.kakao.maps.load(initMap)
   }
