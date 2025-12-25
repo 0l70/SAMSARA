@@ -336,4 +336,10 @@ h1 {
 }
 
 .signup-btn:hover { background-color: #2563eb; }
+/* Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 </style>

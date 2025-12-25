@@ -1,12 +1,35 @@
 ﻿<template>
   <div class="test-container">
     
-    <div v-if="step === -1" class="intro-slide">
-      <div class="icon">💰</div>
-      <h1>나의 금융 성향 테스트</h1>
-      <p>나는 어떤 투자자일까?<br>1분 만에 알아보는 금융 MBTI</p>
-      <button class="start-btn" @click="startTest">테스트 시작하기</button>
+  <div v-if="step === -1" class="intro-slide">
+    <div class="intro-icon-box">
+      <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="45" fill="url(#paint0_linear)" fill-opacity="0.15"/>
+        
+        <rect x="25" y="22" width="40" height="56" rx="4" fill="white" stroke="#E5E7EB" stroke-width="2"/>
+        <path d="M33 34H57" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/>
+        <path d="M33 44H57" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/>
+        <path d="M33 54H48" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/>
+        
+        <circle cx="68" cy="68" r="18" fill="#3B82F6"/>
+        <path d="M60 68L65 73L76 62" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <circle cx="28" cy="72" r="10" fill="#F59E0B" stroke="white" stroke-width="2"/>
+        <path d="M28 68V76M24 72H32" stroke="#FFF7ED" stroke-width="1.5" stroke-linecap="round"/>
+
+        <defs>
+          <linearGradient id="paint0_linear" x1="50" y1="5" x2="50" y2="95" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#3B82F6"/>
+            <stop offset="1" stop-color="#8B5CF6"/>
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
+
+    <h1>나의 금융 성향 테스트</h1>
+    <p>나는 어떤 투자자일까?<br>1분 만에 알아보는 금융 MBTI</p>
+    <button class="start-btn" @click="startTest">테스트 시작하기</button>
+  </div>
 
     <div v-else-if="step < questions.length" class="question-slide">
       <div class="progress-bar">
@@ -111,6 +134,9 @@ const handleResultAction = async () => {
         { mbti: result.value.type }, 
         { headers: { Authorization: `Token ${store.token}` } }
       )
+
+      await store.fetchCurrentUser(store.token)
+      
       alert('금융 성향이 저장되었습니다! AI 비서에게 안내해 드릴게요.')
       router.replace({ name: 'chatbot' }) // 챗봇으로 바로 납치
     } catch (err) {
@@ -279,5 +305,42 @@ const handleResultAction = async () => {
 .retry-btn:hover { 
   background: var(--bg-body); 
   color: var(--text-secondary);
+}
+/* =====================
+   새로운 인트로 아이콘 스타일
+===================== */
+.intro-icon-box {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.intro-icon-box svg {
+  /* 둥둥 떠다니는 애니메이션 적용 */
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 10px 15px rgba(59, 130, 246, 0.15));
+}
+
+/* 둥둥 떠다니는 효과 키프레임 */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* 다크모드 대응: 아이콘이 너무 밝지 않게 배경 조정 */
+/* (참고: 상위 요소에 .dark 클래스가 있거나 CSS 변수를 쓸 경우) */
+@media (prefers-color-scheme: dark) {
+  .intro-icon-box svg rect[fill="white"] {
+    fill: #1F2937; /* 어두운 종이 색 */
+    stroke: #374151;
+  }
+  .intro-icon-box svg path[stroke="#9CA3AF"] {
+    stroke: #4B5563;
+  }
+  .intro-icon-box svg circle[fill="#F59E0B"] {
+    fill: #D97706; /* 코인 색상 약간 톤다운 */
+  }
 }
 </style>
