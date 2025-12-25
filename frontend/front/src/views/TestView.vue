@@ -134,6 +134,9 @@ const handleResultAction = async () => {
         { mbti: result.value.type }, 
         { headers: { Authorization: `Token ${store.token}` } }
       )
+
+      await store.fetchCurrentUser(store.token)
+      
       alert('금융 성향이 저장되었습니다! AI 비서에게 안내해 드릴게요.')
       router.replace({ name: 'chatbot' }) // 챗봇으로 바로 납치
     } catch (err) {

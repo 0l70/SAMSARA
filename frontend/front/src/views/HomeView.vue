@@ -17,41 +17,61 @@
 
     <section class="dashboard-grid">
       
-      <div class="card profile-card">
-        <div v-if="store.token" class="profile-content logged-in">
-          <div class="avatar-circle">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
-          <div class="user-info">
-            <h3 class="welcome-text">
-              <span class="highlight-name">{{ store.nickname || '회원' }}</span>님, 환영합니다
-            </h3>
-            <p class="sub-text">오늘의 금융 자산을 확인해보세요.</p>
-          </div>
-          <div class="profile-actions">
-            <button class="btn-mypage" @click="router.push({ name: 'mypage' })">마이페이지</button>
-            <button class="btn-logout" @click="store.logOut()">로그아웃</button>
-          </div>
+  <div class="card profile-card">
+    <div v-if="store.token" class="profile-content logged-in">
+      
+      <div v-if="mbtiInfo" class="character-area">
+        <div class="avatar-circle" :style="{ backgroundColor: mbtiInfo.bg }">
+          <span class="char-icon" role="img">{{ mbtiInfo.icon }}</span>
         </div>
-
-        <div v-else class="profile-content login-form-container">
-          <div class="login-header">
-            <h3>로그인</h3>
-            <p>서비스 이용을 위해 로그인해주세요</p>
+        <div class="user-info">
+          <div class="mbti-badge" :style="{ color: mbtiInfo.color, borderColor: mbtiInfo.color }">
+            {{ mbtiInfo.label }}
           </div>
-          <form @submit.prevent="handleLogin" class="login-form">
-            <input v-model="loginData.username" type="text" placeholder="아이디" required class="login-input" />
-            <input v-model="loginData.password" type="password" placeholder="비밀번호" required class="login-input" />
-            <button type="submit" class="btn-login-action">로그인 하기</button>
-          </form>
-          <div class="login-footer">
-            <span @click="router.push({ name: 'signup' })" class="link-text">회원가입 하러가기</span>
-          </div>
+          <h3 class="welcome-text">
+            <span class="highlight-name">{{ store.nickname || '회원' }}</span>님
+          </h3>
+          <p class="sub-text">오늘도 자산이 쑥쑥 자라고 있어요! 🌱</p>
         </div>
       </div>
+
+      <div v-else class="character-area no-mbti">
+        <div class="avatar-circle default">
+          <span class="char-icon">❔</span>
+        </div>
+        <div class="user-info">
+          <h3 class="welcome-text">
+            <span class="highlight-name">{{ store.nickname || '회원' }}</span>님
+          </h3>
+          <p class="sub-text">나만의 금융 캐릭터를 찾아보세요!</p>
+          <button class="btn-test-action" @click="goTest">
+            내 성향 알아보기 📝
+          </button>
+        </div>
+      </div>
+
+
+    <div class="profile-actions">
+      <button class="btn-mypage" @click="router.push({ name: 'mypage' })">마이페이지</button>
+      <button class="btn-logout" @click="store.logOut()">로그아웃</button>
+    </div>
+  </div>
+
+  <div v-else class="profile-content login-form-container">
+    <div class="login-header">
+      <h3>로그인</h3>
+      <p>서비스 이용을 위해 로그인해주세요</p>
+    </div>
+    <form @submit.prevent="handleLogin" class="login-form">
+      <input v-model="loginData.username" type="text" placeholder="아이디" required class="login-input" />
+      <input v-model="loginData.password" type="password" placeholder="비밀번호" required class="login-input" />
+      <button type="submit" class="btn-login-action">로그인 하기</button>
+    </form>
+    <div class="login-footer">
+      <span @click="router.push({ name: 'signup' })" class="link-text">회원가입 하러가기</span>
+    </div>
+  </div>
+</div>
 
       <div class="card clock-card">
         <div class="clock-header">
@@ -181,6 +201,23 @@ import axios from 'axios'
 const router = useRouter()
 const store = useAuthStore()
 const financeStore = useFinanceStore()
+
+const mbtiInfo = computed(() => {
+  const mbti = store.mbti // store에 mbti 정보가 있다고 가정 (없으면 user API 호출 필요)
+  
+  const map = {
+    safe: { icon: '🐜', label: '성실한 개미', color: '#84cc16', bg: '#ecfccb' },      // 라임색
+    neutral: { icon: '🐹', label: '신중한 햄스터', color: '#f59e0b', bg: '#fef3c7' }, // 호박색
+    active: { icon: '🦊', label: '똑똑한 여우', color: '#f97316', bg: '#ffedd5' },    // 주황색
+    aggressive: { icon: '🦁', label: '용감한 사자', color: '#ef4444', bg: '#fee2e2' } // 빨간색
+  }
+  
+  return map[mbti] || null // 매칭되는 게 없으면 null (테스트 안 한 상태)
+})
+
+// 2. 테스트 페이지 이동 함수
+const goTest = () => router.push({ name: 'test' })
+
 
 // ----------------------------------------------------
 // [0] 로그인 로직 (Inline Login)
@@ -766,9 +803,11 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 .full-width { grid-column: span 3; background: #fffbeb; border: 1px solid #fcd34d; padding: 16px 24px; min-height: auto; flex-direction: row; align-items: center; }
 .tip-content { display: flex; align-items: center; gap: 12px; color: #92400e; font-weight: 600; font-size: 1rem; }
 .tip-icon-box svg { width: 24px; height: 24px; }
+
+
 /* 1. 스크롤 컨테이너 설정 */
 .product-scroll-area {
-  max-height: 150px;       /* 카드가 너무 커지지 않도록 높이 제한 */
+  max-height: 220px;       /* 카드가 너무 커지지 않도록 높이 제한 */
   overflow-y: auto;        /* 세로 스크롤 활성화 */
   display: flex;
   flex-direction: column;
@@ -854,4 +893,91 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 @media (max-width: 600px) {
   .dashboard-grid { display: flex; flex-direction: column; }
 }
+
+.character-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* 아바타(캐릭터) 원형 스타일 */
+.avatar-circle {
+  width: 80px;        /* 크기 키움 */
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.avatar-circle:hover {
+  transform: scale(1.1) rotate(5deg); /* 마우스 올리면 커지면서 살짝 회전 */
+}
+
+.char-icon {
+  font-size: 42px;    /* 이모지 크기 */
+  line-height: 1;
+  animation: float 3s ease-in-out infinite; /* 둥실둥실 효과 */
+}
+
+/* 테스트 전 기본 상태 */
+.avatar-circle.default {
+  background-color: #f3f4f6;
+  border: 2px dashed #d1d5db;
+}
+
+/* MBTI 뱃지 (예: 성실한 개미) */
+.mbti-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid; /* 색상은 인라인 스타일로 들어감 */
+  background: white;
+  margin-bottom: 6px;
+}
+
+/* 테스트 하러 가기 버튼 (강조) */
+.btn-test-action {
+  margin-top: 8px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s;
+  animation: pulse-btn 2s infinite;
+}
+
+.btn-test-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(59, 130, 246, 0.4);
+}
+
+/* 애니메이션 키프레임 */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes pulse-btn {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* 텍스트 정리 */
+.welcome-text { margin: 0; font-size: 1.5rem; }
+.sub-text { margin-top: 5px; color: #6b7280; font-size: 0.95rem; }
+
 </style>
