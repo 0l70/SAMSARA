@@ -372,4 +372,10 @@ h1 { text-align: center; margin-bottom: 5px; color: var(--text-primary); } /* #1
 
 .change-pwd-btn { background-color: #4b5563; color: white; margin-top: 10px; }
 .change-pwd-btn:hover { background-color: #374151; }
+/* Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 </style>

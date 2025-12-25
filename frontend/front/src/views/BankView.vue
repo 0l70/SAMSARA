@@ -52,8 +52,15 @@
       <main class="content-grid">
         <div class="map-wrapper">
           <div id="map" class="map"></div>
-          <button class="loc-btn" @click="findMyLocation(true)" title="내 위치">
-            📍
+          
+          <button class="loc-btn" @click="findMyLocation(true)" title="내 위치 찾기">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="22" y1="12" x2="18" y2="12"></line>
+              <line x1="6" y1="12" x2="2" y2="12"></line>
+              <line x1="12" y1="6" x2="12" y2="2"></line>
+              <line x1="12" y1="22" x2="12" y2="18"></line>
+            </svg>
           </button>
         </div>
 
@@ -64,7 +71,12 @@
           </div>
 
           <div v-if="!places.length && !isLoading" class="empty-state">
-            <div class="empty-icon">🔍</div>
+            <div class="empty-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
             <p>조건을 선택하고 검색해주세요</p>
           </div>
 
@@ -1307,11 +1319,39 @@ const drawRouteTo = async (place) => {
 }
 .route-btn:hover { filter: brightness(0.95); }
 
+/* 검색 결과 없음(Empty State) 영역 스타일 */
 .empty-state {
-  margin-top: auto; margin-bottom: auto;
-  text-align: center; color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-muted, #9ca3af); /* 기존에 정의한 변수가 없다면 기본 회색 사용 */
+  background-color: var(--bg-card, #fff); /* 카드 배경색과 맞춤 */
+  border-radius: 16px;
+  /* 필요하다면 테두리나 그림자 추가 */
+  /* border: 1px solid var(--border-color, #e5e7eb); */
 }
-.empty-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
+
+.empty-icon {
+  margin-bottom: 20px;
+  color: #d1d5db; /* 아주 연한 회색으로 은은하게 표현 */
+  
+  /* (선택사항) 마우스 올렸을 때 살짝 움직이는 효과 */
+  transition: transform 0.3s ease;
+}
+
+.empty-state:hover .empty-icon {
+  transform: scale(1.05) rotate(-5deg);
+  color: #9ca3af; /* 호버 시 조금 더 진하게 */
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
 
 /* 스크롤바 커스텀 */
 .list-wrapper::-webkit-scrollbar { width: 6px; }

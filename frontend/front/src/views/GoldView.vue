@@ -3,8 +3,18 @@
     
     <div class="header-section">
       <span class="badge-title">원자재 시장</span>
-      <h1 class="page-title">금/은 시세</h1>
-      <p class="page-subtitle">실시간 환율 연동 차트</p>
+      
+      <h1 class="page-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="header-icon">
+          <path d="M6 10L8 6H16L18 10H6Z" />
+          <path d="M6 10V18C6 19.1 6.9 20 8 20H16C17.1 20 18 19.1 18 18V10" />
+          <path d="M20 14L23 11L20 8" stroke="#f57f17" />
+          <path d="M12 11L23 11" stroke="#f57f17" />
+        </svg>
+        금/은 시세
+      </h1>
+      
+      <p class="page-subtitle">실시간 국제 시세와 환율을 반영한 차트입니다.</p>
     </div>
 
     <div v-if="isLoading" class="loading-container">
@@ -34,7 +44,7 @@
             </div>
 
             <p class="rate-text">
-              💱 적용 환율: <strong>1$ = {{ currentExchangeRate.toLocaleString() }}원</strong>
+              적용 환율: <strong>1$ = {{ currentExchangeRate.toLocaleString() }}원</strong>
             </p>
           </div>
 
@@ -311,6 +321,64 @@ onMounted(() => {
   margin-bottom: 30px;
   padding-bottom: 25px;
   border-bottom: 2px solid var(--border-color); /* 경계선 변수 */
+}
+
+/* =====================
+   2. 헤더 섹션 (레퍼런스 스타일 적용)
+===================== */
+.header-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.badge-title {
+  background-color: var(--bg-badge); /* 기존 변수 활용 */
+  color: #d4af37; /* 금색 텍스트 */
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.page-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -1px;
+  margin: 0 0 10px 0;
+  
+  /* ★ 핵심: 아이콘과 텍스트 가로 정렬 (Flex) ★ */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* 아이콘 미세 조정 */
+.header-icon {
+  color: #d4af37; /* 금색 */
+  filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.2)); /* 살짝 빛나는 효과 */
+  transform: translateY(-2px); /* 시각적 중심 맞춤 */
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 1.8rem;
+    gap: 8px;
+  }
+  .header-icon {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 /* =====================

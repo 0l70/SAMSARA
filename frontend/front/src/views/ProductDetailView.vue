@@ -1,5 +1,6 @@
 <template>
   <div class="detail-container" v-if="product">
+    
     <div class="header-section">
       <span class="bank-badge">{{ product.kor_co_nm }}</span>
       <h1 class="product-title">{{ product.fin_prdt_nm }}</h1>
@@ -20,26 +21,34 @@
       </div>
       
       <div class="rate-section">
-        <h3 class="rate-title">💰 기간별 금리 (연 %)</h3>
-        <table class="rate-table">
-          <thead>
-            <tr>
-              <th>계약 기간</th>
-              <th>기본 금리</th>
-              <th>최고 금리</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="opt in product.options" :key="opt.id">
-              <td>{{ opt.save_trm }}개월</td>
-              <td>{{ opt.intr_rate }}%</td>
-              <td class="highlight">{{ opt.intr_rate2 }}%</td>
-            </tr>
-          </tbody>
-        </table>
+        <h3 class="rate-title">
+          <svg class="icon-svg title-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+          기간별 금리 (연 %)
+        </h3>
+        
+        <div class="table-container">
+          <table class="rate-table">
+            <thead>
+              <tr>
+                <th>계약 기간</th>
+                <th>기본 금리</th>
+                <th>최고 금리</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="opt in product.options" :key="opt.id">
+                <td>{{ opt.save_trm }}개월</td>
+                <td>{{ opt.intr_rate }}%</td>
+                <td class="highlight">{{ opt.intr_rate2 }}%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="info-row" style="border-top: 1px solid #f3f4f6; padding-top: 20px;">
+      <div class="info-row" style="border-top: 1px solid var(--border-color); padding-top: 20px;">
         <span class="label">상품 설명</span>
         <span class="value description">{{ product.etc_note || '상세 설명이 없습니다.' }}</span>
       </div>
@@ -51,7 +60,10 @@
         @click="store.cancelProduct(product.fin_prdt_cd)" 
         class="btn btn-danger"
       >
-        💔 가입 취소
+        <svg class="icon-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+        가입 취소
       </button>
 
       <button 
@@ -59,7 +71,10 @@
         @click="store.joinProduct(product)" 
         class="btn btn-primary"
       >
-        💳 가입하기
+        <svg class="icon-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        가입하기
       </button>
 
       <a 
@@ -68,10 +83,15 @@
         target="_blank" 
         class="btn btn-bank"
       >
-        🏦 {{ product.kor_co_nm }} 공식 사이트
+        <svg class="icon-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+        {{ product.kor_co_nm }} 공식 사이트
       </a>
       
-      <button @click="router.back()" class="btn btn-secondary">뒤로가기</button>
+      <button @click="router.back()" class="btn btn-secondary">
+        뒤로가기
+      </button>
     </div>
   </div>
 
@@ -91,7 +111,6 @@ const router = useRouter()
 const store = useFinanceStore()
 const product = ref(null)
 
-// 은행 URL 매핑
 const mainBankUrls = {
   '국민은행': 'https://www.kbstar.com',
   '신한은행': 'https://www.shinhan.com',
@@ -111,12 +130,12 @@ const mainBankUrls = {
   '카카오뱅크': 'https://www.kakaobank.com',
   '토스뱅크': 'https://www.tossbank.com',
   '케이뱅크': 'https://www.kbanknow.com',
+  '아이엠뱅크' : 'https://www.imbank.co.kr'
 }
 
 const bankUrl = computed(() => {
   if (!product.value) return null
   const bankName = product.value.kor_co_nm
-  
   if (mainBankUrls[bankName]) return mainBankUrls[bankName]
   for (const key in mainBankUrls) {
     if (bankName.includes(key)) return mainBankUrls[key]
@@ -128,14 +147,11 @@ const bankUrl = computed(() => {
 onMounted(async () => {
   const productId = route.params.id
   let found = findProduct(productId)
-
   if (found) {
     product.value = found
   } else {
-    // 새로고침 대응
     if (store.products.length === 0) await store.getProducts()
     if (store.savingProducts.length === 0) await store.getSavingProducts()
-    
     found = findProduct(productId)
     if (found) product.value = found
     else {
@@ -160,6 +176,7 @@ const findProduct = (id) => {
   font-weight: 700; 
   padding: 8px 16px; 
   border-radius: 20px; 
+  font-size: 0.9rem;
 }
 
 .product-title { 
@@ -172,7 +189,7 @@ const findProduct = (id) => {
 
 .info-card { 
   background: var(--bg-card); 
-  border-radius: 20px; 
+  border-radius: 24px; 
   padding: 40px; 
   box-shadow: 0 10px 30px var(--shadow-color); 
   border: 1px solid var(--border-color); 
@@ -184,77 +201,113 @@ const findProduct = (id) => {
 .value { color: var(--text-primary); font-weight: 500; line-height: 1.6; flex: 1; }
 .description { white-space: pre-line; word-break: keep-all; color: var(--text-secondary); }
 
-/* ▼ 금리 테이블 스타일 */
+/* ▼▼▼ 금리 섹션 스타일 수정 (요청사항 반영) ▼▼▼ */
 .rate-section { 
-  margin: 20px 0; 
-  background-color: var(--bg-body); 
-  padding: 20px; 
-  border-radius: 12px; 
+  margin: 25px 0; 
+  background-color: var(--bg-body); /* 회색 박스 배경 */
+  padding: 20px 24px 30px 24px;   /* 상단 패딩 축소 (24 -> 20) */
+  border-radius: 16px; 
 }
-.rate-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 15px; }
 
+.rate-title { 
+  font-size: 1.15rem; 
+  font-weight: 700; 
+  color: var(--text-primary); 
+  margin: 0 0 16px 0; /* 상단 여백 제거, 하단 여백 조정 */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 테이블을 감싸는 박스가 아닌, 테이블 자체에 그림자 부여 */
 .rate-table { 
   width: 100%; 
-  border-collapse: collapse; 
-  background: var(--bg-card); 
-  border-radius: 8px; 
+  border-collapse: separate; 
+  border-spacing: 0;
+  background: var(--bg-card); /* 테이블 배경 흰색 */
+  border-radius: 12px; 
   overflow: hidden; 
+  
+  /* ✨ 핵심: 테이블에 입체적인 그림자 추가 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+  border: 1px solid var(--border-color);
 }
-.rate-table th { background-color: var(--bg-hover); color: var(--text-secondary); padding: 12px; }
-.rate-table td { padding: 12px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+
+.rate-table th { 
+  background-color: var(--bg-hover); 
+  color: var(--text-secondary); 
+  padding: 14px; 
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.rate-table td { 
+  padding: 14px; 
+  border-bottom: 1px solid var(--border-color); 
+  color: var(--text-primary); 
+  text-align: center;
+}
+/* 마지막 줄은 보더 제거 */
+.rate-table tr:last-child td { border-bottom: none; }
+/* ▲▲▲ 금리 섹션 스타일 수정 끝 ▲▲▲ */
 
 .highlight { color: #ff6b6b; font-weight: 800; }
 
-/* 버튼들을 감싸는 영역 */
+/* 아이콘 공통 스타일 */
+.icon-svg { width: 20px; height: 20px; stroke-width: 2px; }
+.title-icon { color: #4a86e8; width: 24px; height: 24px; }
+
+/* 버튼 영역 스타일 */
 .action-area {
   display: flex;
-  justify-content: center; /* ✨ 버튼들을 가로 중앙으로 정렬 */
-  align-items: center;     /* 세로 중앙 정렬 */
-  gap: 16px;               /* 버튼 사이 간격 */
-  margin-top: 40px;        /* 카드와의 간격 */
-  width: 100%;             /* 전체 너비 사용 */
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 40px;
+  width: 100%;
 }
 
-/* 버튼 공통 스타일 */
 .btn { 
   padding: 14px 28px; 
   border-radius: 12px; 
   font-weight: 700; 
   font-size: 1rem; 
   cursor: pointer; 
-  transition: all 0.2s; 
+  transition: all 0.2s ease; 
   text-decoration: none; 
   display: inline-flex; 
   align-items: center; 
   justify-content: center;
   border: none;
-  min-width: 140px; /* ✨ 버튼들이 너무 작아지지 않게 최소 너비 지정 */
+  min-width: 140px; 
+  gap: 8px; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+.btn:hover { transform: translateY(-2px); filter: brightness(0.95); }
+.btn-primary { background-color: #3b82f6; color: white; }
+.btn-danger { background-color: #ef4444; color: white; }
+.btn-bank { background-color: #4b5563; color: white; }
+.btn-secondary { background-color: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); box-shadow: none; }
 
-/* 뒤로가기 버튼 다크모드 대응 */
-.btn-secondary { 
-  background-color: var(--bg-card);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+:global([data-theme="light"]) .btn-bank { background-color: #1f2937; }
+
+.loading-container { text-align: center; margin-top: 100px; }
+.spinner { 
+  border: 4px solid var(--border-color); 
+  border-top: 4px solid #3b82f6; 
+  border-radius: 50%; 
+  width: 40px; 
+  height: 40px; 
+  animation: spin 1s linear infinite; 
+  margin: 0 auto 20px;
 }
-.btn-secondary:hover {
-  background-color: var(--bg-hover);
-}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-.btn-bank { background-color: #14428b; color: white; }
-:global([data-theme="light"]) .btn-bank { background-color: #3b82f6; }
-
-/* 로딩 스타일 */
-.spinner { border: 4px solid var(--border-color); border-top: 4px solid #42b983; }
-/* 반응형: 화면이 작아지면 버튼을 세로로 쌓고 싶을 때 (선택 사항) */
 @media (max-width: 600px) {
-  .action-area {
-    flex-direction: column; /* 모바일에서는 세로로 */
-    gap: 10px;
-  }
-  .btn {
-    width: 100%; /* 모바일에서는 버튼이 꽉 차게 */
-  }
+  .action-area { flex-direction: column; gap: 12px; }
+  .btn { width: 100%; }
 }
 </style>

@@ -3,7 +3,10 @@
     
     <div class="header-section">
       <span class="badge-title">실시간 정보</span>
-      <h1 class="page-title">💱 환율 계산기</h1>
+      <h1 class="page-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        환율 계산기
+      </h1>
       <p class="page-subtitle">주요 통화의 실시간 환율을 확인하고 계산해보세요.</p>
     </div>
 
@@ -45,12 +48,18 @@
 
         <div class="swap-icon-wrapper">
           <div class="swap-icon" @click="toggleSwap" title="위아래 바꾸기">
-            <b>⥮</b>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 20V4"/>
+              <path d="M3 8l4-4 4 4"/>
+              
+              <path d="M17 4v16"/>
+              <path d="M13 16l4 4 4-4"/>
+            </svg>
           </div>
         </div>
 
         <div class="currency-box result-box input-active">
-          <div class="box-header">
+           <div class="box-header">
             <label class="box-label">
               {{ isSwapped ? '외화 (받을 금액)' : 'KRW (받을 금액)' }}
             </label>
@@ -76,16 +85,21 @@
         </div>
 
         <div class="rate-info" v-if="selectedCurrency">
-          <span class="info-icon"><b>※</b></span>
+          <span class="info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </span>
           적용 환율: 1 {{ selectedCurrency.unit }} = {{ selectedCurrency.rate.toLocaleString() }} 원
           <br>
-          <span style="font-size:0.8em; color:#9ca3af;">({{ selectedCurrency.date }} 기준)</span>
+          <span style="font-size:0.8em; color:#9ca3af; margin-left: 20px;">({{ selectedCurrency.date }} 기준)</span>
         </div>
       </div>
 
       <div class="chart-card" v-if="selectedCurrency">
         <div class="chart-header">
-          <h2>📉 {{ selectedCurrency.unit }} 최근 동향</h2>
+          <h2 class="chart-title-flex">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; color:#4a86e8;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            {{ selectedCurrency.unit }} 최근 동향
+          </h2>
           <span class="badge">최근 7일</span>
         </div>
         <div class="chart-wrapper">
@@ -321,72 +335,52 @@ const chartOptions = {
 </script>
 
 <style scoped>
-  /* ▼▼▼ [수정] 레이아웃 및 헤더 스타일 추가 ▼▼▼ */
+/* =========================================
+   0. 디자인 시스템 (색상 변수 정의)
+   ========================================= */
+:root {
+  /* 라이트 모드 (기본) */
+  --primary-color: #4a86e8;       /* 메인 블루 */
+  --bg-body: #f5f7fa;             /* 전체 배경 */
+  --bg-card: #ffffff;             /* 카드 배경 */
+  --bg-input: #ffffff;            /* 입력창 배경 */
+  --bg-badge: #e8f0fe;            /* 뱃지 배경 */
+  --text-primary: #111827;        /* 진한 텍스트 */
+  --text-secondary: #4b5563;      /* 중간 텍스트 */
+  --text-muted: #9ca3af;          /* 연한 텍스트 */
+  --border-color: #e5e7eb;        /* 테두리 색상 */
+  --shadow-color: rgba(0, 0, 0, 0.05); /* 그림자 */
+}
+
+/* (참고) 다크 모드 필요시 아래 주석 해제 후 body 등에 적용 */
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-body: #111827;
+    --bg-card: #1f2937;
+    --bg-input: #1f2937;
+    --bg-badge: #374151;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --border-color: #374151;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+  }
+}
+*/
+
+/* =========================================
+   1. 전체 레이아웃
+   ========================================= */
 .page-container {
   display: flex;
-  flex-direction: column; /* 세로 정렬로 변경 */
-  align-items: center;    /* 가로 중앙 정렬 */
-  min-height: 80vh;
-  background-color: #f5f7fa;
-  padding: 60px 20px;     /* 상단 여백 확보 */
-}
-
-/* 제목 섹션 스타일 */
-.header-section {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.badge-title {
-  background-color: var(--bg-badge); /* 변수 사용 */
-  color: #4a86e8; /* 다크모드 가독성 블루 */
-  font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  display: inline-block;
-  margin-bottom: 12px;
-}
-
-.page-title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--text-primary); /* ✨ 고정값 #111에서 변수로 변경 */
-  letter-spacing: -1px;
-  margin: 0 0 10px 0;
-}
-
-.page-subtitle {
-  color: var(--text-secondary); /* ✨ 고정값 #666에서 변수로 변경 */
-  font-size: 1.1rem;
-  margin: 0;
-}
-/* =====================
-  1. 전체 레이아웃 및 배경
-===================== */
-/* =====================
-  1. 전체 레이아웃 및 배경 (수정됨)
-===================== */
-.page-container { 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  min-height: 80vh; 
-  /* ✨ 고정값 #f5f7fa 대신 변수 사용 */
-  background-color: var(--bg-body); 
-  padding: 60px 20px; 
-  transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
-}
-
-/* 나머지 디자인 배치는 그대로 유지됩니다 */
-.loading-msg {
-  display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   min-height: 80vh;
-  font-size: 1.2rem;
-  color: var(--text-muted);
-  font-weight: 600;
+  background-color: var(--bg-body);
+  padding: 60px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  transition: background-color 0.3s ease;
 }
 
 .dashboard-layout {
@@ -409,18 +403,71 @@ const chartOptions = {
   }
 }
 
-/* =====================
-  2. 카드 공통 스타일
-===================== */
+.loading-msg {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  gap: 20px;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+/* =========================================
+   2. 헤더 섹션
+   ========================================= */
+.header-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.badge-title {
+  background-color: var(--bg-badge);
+  color: var(--primary-color);
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.page-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -1px;
+  margin: 0 0 10px 0;
+  
+  /* 아이콘과 텍스트 가로 정렬 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.header-icon {
+  color: var(--primary-color);
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* =========================================
+   3. 카드 공통 스타일
+   ========================================= */
 .exchange-card, .chart-card {
-  background: var(--bg-card); /* 카드 배경 변수 */
+  background: var(--bg-card);
   width: 100%;
   max-width: 480px;
   padding: 40px 30px;
   border-radius: 24px;
   box-shadow: 0 10px 30px var(--shadow-color);
   border: 1px solid var(--border-color);
-  text-align: center;
   transition: all 0.3s ease;
 }
 
@@ -429,28 +476,29 @@ const chartOptions = {
   font-weight: 800;
   color: var(--text-primary);
   margin-bottom: 30px;
+  text-align: center;
 }
 
-/* =====================
-  3. 환율 입력 박스 (가시성 강화)
-===================== */
+/* =========================================
+   4. 환율 입력 박스
+   ========================================= */
 .currency-box {
-  background-color: var(--bg-body); /* 카드 내부 입력창 배경 */
+  background-color: var(--bg-input);
   border-radius: 16px;
   padding: 20px;
   transition: all 0.2s ease;
   border: 1px solid var(--border-color);
 }
 
-/* 포커스 효과 */
+/* 입력창 포커스 효과 */
 .currency-box.input-active:focus-within {
-  border-color: #4a86e8;
-  background-color: var(--bg-card);
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 4px rgba(74, 134, 232, 0.15);
 }
 
+/* 결과창 스타일 (배경색 약간 다름) */
 .result-box {
-  background-color: var(--bg-badge); /* 결과창은 약간 다른 톤 */
+  background-color: var(--bg-badge);
   border: 1px solid rgba(74, 134, 232, 0.1);
 }
 
@@ -458,31 +506,38 @@ const chartOptions = {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .box-label {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
-.currency-select, .currency-unit {
-  font-weight: 700;
-  color: var(--text-primary);
-  font-size: 1rem;
-}
-
+/* 셀렉트 박스 */
 .currency-select {
-  padding: 4px 8px;
+  padding: 6px 10px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background-color: var(--bg-card);
   color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
   outline: none;
 }
+.currency-select:hover {
+  border-color: var(--primary-color);
+}
 
+.currency-unit {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+/* 숫자 입력 영역 */
 .input-area {
   display: flex;
   justify-content: flex-end;
@@ -492,65 +547,100 @@ const chartOptions = {
   width: 100%;
   border: none;
   background: transparent;
-  font-size: 2.5rem;
+  font-size: 2.4rem;
   font-weight: 800;
   text-align: right;
   color: var(--text-primary);
   outline: none;
   padding: 0;
   letter-spacing: -1px;
+  font-family: 'Roboto', sans-serif; /* 숫자가 예쁜 폰트 권장 */
+}
+
+.amount-input::placeholder {
+  color: #d1d5db;
 }
 
 .result-text {
-  color: #4a86e8;
-  text-shadow: 0 0 8px rgba(74, 134, 232, 0.2);
+  color: var(--primary-color);
 }
 
-/* =====================
-  4. 스왑 아이콘 & 정보
-===================== */
+/* 크롬 Number Input 화살표 제거 */
+.amount-input::-webkit-outer-spin-button,
+.amount-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* =========================================
+   5. 스왑(교환) 버튼 [핵심]
+   ========================================= */
 .swap-icon-wrapper {
   position: relative;
-  height: 20px;
+  height: 24px; /* 버튼이 들어갈 공간 확보 */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2;
+  z-index: 5;
 }
 
 .swap-icon {
   position: absolute;
-  top: -18px;
-  background: var(--bg-card);
+  top: -20px; /* 두 박스 사이에 걸치도록 위치 조정 */
+  
   width: 44px;
   height: 44px;
   border-radius: 50%;
+  background: var(--bg-card);
+  border: 4px solid var(--bg-body); /* 배경색과 동일한 테두리로 간격 효과 */
+  
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
-  border: 3px solid var(--bg-body);
+  
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 10px var(--shadow-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* 호버 시 애니메이션 */
 .swap-icon:hover {
   transform: rotate(180deg) scale(1.1);
-  color: #4a86e8;
-  border-color: #4a86e8;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color); /* 테두리까지 색상 변경 */
+  box-shadow: 0 8px 20px rgba(74, 134, 232, 0.4);
 }
 
+/* =========================================
+   6. 환율 정보 텍스트
+   ========================================= */
 .rate-info {
   margin-top: 25px;
   font-size: 0.9rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  background-color: rgba(243, 244, 246, 0.5); /* 아주 연한 회색 박스 */
+  padding: 12px;
+  border-radius: 12px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  line-height: 1.5;
 }
 
-/* =====================
-  5. 차트 섹션
-===================== */
+.info-icon {
+  display: flex;
+  align-items: center;
+  color: var(--primary-color);
+}
+
+/* =========================================
+   7. 차트 섹션
+   ========================================= */
 .chart-card {
   display: flex;
   flex-direction: column;
@@ -561,10 +651,14 @@ const chartOptions = {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.chart-header h2 {
+.chart-title-flex {
+  display: flex;
+  align-items: center;
   font-size: 1.4rem;
   font-weight: 800;
   color: var(--text-primary);
@@ -573,11 +667,11 @@ const chartOptions = {
 
 .badge {
   background-color: var(--bg-badge);
-  color: #4a86e8;
+  color: var(--primary-color);
   font-weight: 700;
-  font-size: 0.85rem;
-  padding: 6px 12px;
-  border-radius: 20px;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 12px;
 }
 
 .chart-wrapper {
@@ -590,18 +684,11 @@ const chartOptions = {
   margin-top: 20px;
   text-align: center;
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
 }
 
 .chart-desc strong {
-  color: #4a86e8;
-}
-
-/* 크롬 number 화살표 제거 */
-.amount-input::-webkit-outer-spin-button,
-.amount-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+  color: var(--primary-color);
+  font-weight: 700;
 }
 </style>

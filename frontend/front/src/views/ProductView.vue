@@ -45,13 +45,13 @@
           <table>
             <thead>
               <tr>
-                <th width="15%">금융회사</th>
-                <th width="25%">상품명</th>
-                <th width="10%">6개월</th>
-                <th width="10%">12개월</th>
-                <th width="10%">24개월</th>
-                <th width="10%">36개월</th>
-                <th width="20%">가입방법</th>
+                <th width="14%">금융회사</th>
+                <th width="32%">상품명</th>   <!-- ⬆️ 상품명 확장 -->
+                <th width="9%">6개월</th>
+                <th width="9%">12개월</th>
+                <th width="9%">24개월</th>
+                <th width="9%">36개월</th>
+                <th width="18%">가입방법</th> <!-- ⬇️ 가입방법 축소 -->
               </tr>
             </thead>
             <tbody>
@@ -230,19 +230,138 @@ const goDetail = (product) => {
   border: 1px solid var(--border-color);
 }
 
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* =========================
+   테이블 기본 레이아웃
+   ========================= */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* =========================
+   테이블 헤더
+   ========================= */
 th {
   background-color: var(--bg-body);
   color: var(--text-secondary);
   font-weight: 600;
-  padding: 18px;
+  font-size: 15px;
+  padding: 18px 12px;
+  border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
+  text-align: center;          /* ✅ 가운데 정렬 */
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
+/* =========================
+   테이블 바디
+   ========================= */
 td {
-  padding: 20px 15px;
+  padding: 20px 12px;
+  border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   color: var(--text-secondary);
+  font-size: 15px;
+  text-align: center;          /* ✅ 가운데 정렬 */
+  vertical-align: middle;
 }
+
+th:last-child,
+td:last-child {
+  border-right: none;
+}
+
+/* =========================
+   행 인터랙션
+   ========================= */
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
+  background-color: var(--bg-hover);
+  cursor: pointer;
+}
+
+/* =========================
+   텍스트 컬럼 (왼쪽 정렬)
+   ========================= */
+.bank-name,
+.product-name {
+  text-align: center;
+  color: var(--text-primary);
+}
+
+/* 은행명 강조 */
+.bank-name {
+  font-weight: 700;
+}
+
+/* =========================
+   금리 컬럼
+   ========================= */
+.rate {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums; /* 숫자 정렬 */
+}
+
+/* 기준 금리 강조 */
+.main-rate {
+  color: #4a86e8;
+  font-weight: 800;
+}
+
+/* =========================
+   가입방법 태그
+   ========================= */
+.join-way {
+  text-align: center;
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 999px;
+  background-color: var(--bg-body);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* =========================
+   반응형 대응 (모바일)
+   ========================= */
+@media (max-width: 768px) {
+  th,
+  td {
+    padding: 14px 8px;
+    font-size: 14px;
+  }
+
+  .tag {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+}
+
 
 tr:hover {
   background-color: var(--bg-hover);
