@@ -129,7 +129,11 @@
     </header>
 
     <main class="main-content">
-      <RouterView />
+      <router-view v-slot="{ Component }">
+        <transition name="page-fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </main>
 
   </div>
@@ -284,5 +288,38 @@ header {
   .logo { font-size: 22px; }
   .nav-btn, .single-link { font-size: 14px; padding: 8px 10px; }
   .nav-right { gap: 4px; }
+}
+</style>
+
+<style>
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.page-fade-leave-to {
+  opacity: 0;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  /* 변수가 로드되기 전에도 하얀색(또는 다크모드 배경색)이 보이도록 설정 */
+  background-color: #f2f4f6; 
+}
+
+/* 다크모드일 때 초기 배경색 */
+[data-theme="dark"] body {
+  background-color: #121212;
+}
+
+/* 만약 app-wrapper에 파란색 배경이 들어가 있다면 제거 */
+.app-wrapper {
+  background-color: var(--bg-body); /* 파란색이 아닌 배경색 변수 사용 */
+  min-height: 100vh;
 }
 </style>

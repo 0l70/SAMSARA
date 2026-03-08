@@ -15,11 +15,15 @@
         </div>
 
         <div class="header-right-info" v-if="userInfo">
-          <span class="user-badge">
-            {{ userInfo.nickname || '회원' }}
-            <span v-if="userInfo.mbti">({{ userInfo.mbti }})</span>
-          </span>
+          <div class="user-profile-box">
+            <span class="user-nickname">{{ userInfo.nickname || '회원' }}</span>
+            
+            <span v-if="userInfo.mbti && mbtiMap[userInfo.mbti]" class="user-mbti-badge">
+              {{ mbtiMap[userInfo.mbti].icon }} {{ mbtiMap[userInfo.mbti].label }}
+            </span>
+          </div>
         </div>
+
       </header>
 
       <main class="chat-container" ref="chatWindow" @click="handleLinkClick">
@@ -113,6 +117,13 @@ const isLoading = ref(false)
 const chatWindow = ref(null)
 const userInfo = ref(null)
 const isDarkMode = ref(false)
+
+const mbtiMap = {
+  safe: { label: '성실한 개미', icon: '🐜' },
+  neutral: { label: '신중한 햄스터', icon: '🐹' },
+  active: { label: '똑똑한 여우', icon: '🦊' },
+  aggressive: { label: '용감한 사자', icon: '🦁' }
+}
 
 // ------------------------------------------------------------------
 // 1. 하이퍼링크 생성 (KB 특★한 적금 해결 로직)
@@ -342,17 +353,43 @@ const shouldShowDate = (idx) => idx === 0 || new Date(messages.value[idx].create
 .bot-status { font-size: 11px; color: #8E8E93; }
 
 .header-right-info {
-  width: 60px;
+  /* width 제한을 조금 풀거나 auto로 두어 내용에 맞게 늘어남 */
+  min-width: 60px; 
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
-.user-badge {
-  font-size: 11px;
-  color: #8E8E93;
-  font-weight: 500;
-  text-align: right;
-  line-height: 1.2;
-  padding: 10px 0px 5px;
+
+.user-profile-box {
+  display: flex;
+  flex-direction: column; /* 위아래로 쌓기 */
+  align-items: flex-end;  /* 우측 정렬 */
+  gap: 2px;
+}
+
+.user-nickname {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000;
+}
+
+.user-mbti-badge {
+  font-size: 10px;
+  color: #666;
+  background-color: rgba(0,0,0,0.05);
+  padding: 2px 6px;
+  border-radius: 8px;
+  white-space: nowrap; /* 줄바꿈 방지 */
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 다크모드 대응 */
+.ios-frame.dark .user-nickname { color: #FFF; }
+.ios-frame.dark .user-mbti-badge { 
+  background-color: rgba(255,255,255,0.15); 
+  color: #DDD; 
 }
 
 /* ----------------------------------------------------

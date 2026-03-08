@@ -1033,9 +1033,9 @@ const drawRouteTo = async (place) => {
     const distance = (routes.summary.distance / 1000).toFixed(1) + 'km'
     
     const content = `
-      <div style="padding:10px; font-size:13px; text-align:center; background:white; border-radius:5px; border:1px solid #ccc;">
+      <div style="padding:10px; font-size:13px; color: #000 !important; text-align:center; background:white; border-radius:5px; border:1px solid #ccc;">
         <strong>${place.place_name}</strong><br>
-        🚗 ${duration} / ${distance}
+        🚘 ${duration} / ${distance}
       </div>`
     
     infowindow.value.setContent(content)

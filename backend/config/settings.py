@@ -70,12 +70,16 @@ MIDDLEWARE = [
 ]
 
 # CORS 설정 (Vue 포트 허용)
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
-]
+CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_CREDENTIALS = True
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://127.0.0.1:5173",
+#     "http://localhost:5174",
+#     "http://127.0.0.1:5174",
+#     "http://61.73.128.241:5173",
+# ]
 
 ROOT_URLCONF = 'config.urls'
 
@@ -172,3 +176,9 @@ EXCHANGE_API_KEY = os.getenv('EXCHANGE_API_KEY')
 OPENAI_API_KEY= os.getenv('OPENAI_API_KEY')
 VITE_KAKAO_JS_KEY = os.getenv('VITE_KAKAO_JS_KEY')
 VITE_KAKAO_REST_KEY= os.getenv('VITE_KAKAO_REST_KEY')
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',
+    'http://61.73.128.241:5173', # <--- 지금 쓰고 있는 프론트 주소 꼭 추가
+]

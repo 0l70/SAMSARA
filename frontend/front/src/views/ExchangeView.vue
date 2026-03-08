@@ -17,7 +17,22 @@
 
     <div v-else class="dashboard-layout">
 
-      <div class="exchange-card">
+      <div class="chart-card" v-if="selectedCurrency">
+        <div class="chart-header">
+          <h2 class="chart-title-flex">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; color:#4a86e8;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            {{ selectedCurrency.unit }} 최근 동향
+          </h2>
+          <span class="badge">최근 7일</span>
+        </div>
+        <div class="chart-wrapper">
+          <Line :data="chartData" :options="chartOptions" />
+        </div>
+        <p class="chart-desc">
+          최근 7일간의 <strong>{{ selectedCurrency.name }}</strong> 환율 변동 추이입니다.
+        </p>
+      </div>
+          <div class="exchange-card">
         <h2 class="card-title">계산하기</h2>
 
         <div class="currency-box input-active">
@@ -28,7 +43,7 @@
             
             <select v-if="!isSwapped" v-model="selectedCurrency" @change="calculateFromTop" class="currency-select">
               <option v-for="currency in currencies" :key="currency.unit" :value="currency">
-                {{ currency.unit }} ({{ currency.name }})
+                {{ currency.unit }} ({{ currency.name.replace('옌', '엔') }})
               </option>
             </select>
 
@@ -68,7 +83,7 @@
 
             <select v-else v-model="selectedCurrency" @change="calculateFromBottom" class="currency-select">
               <option v-for="currency in currencies" :key="currency.unit" :value="currency">
-                {{ currency.unit }} ({{ currency.name }})
+                {{ currency.unit }} ({{ currency.name.replace('옌', '엔') }})
               </option>
             </select>
           </div>
@@ -93,23 +108,6 @@
           <span style="font-size:0.8em; color:#9ca3af; margin-left: 20px;">({{ selectedCurrency.date }} 기준)</span>
         </div>
       </div>
-
-      <div class="chart-card" v-if="selectedCurrency">
-        <div class="chart-header">
-          <h2 class="chart-title-flex">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; color:#4a86e8;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            {{ selectedCurrency.unit }} 최근 동향
-          </h2>
-          <span class="badge">최근 7일</span>
-        </div>
-        <div class="chart-wrapper">
-          <Line :data="chartData" :options="chartOptions" />
-        </div>
-        <p class="chart-desc">
-          최근 7일간의 <strong>{{ selectedCurrency.name }}</strong> 환율 변동 추이입니다.
-        </p>
-      </div>
-
     </div>
   </div>
 </template>

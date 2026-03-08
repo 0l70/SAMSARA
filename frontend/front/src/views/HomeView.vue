@@ -103,7 +103,16 @@
       </div>
 
       <div class="card menu-card">
-        <h3>바로가기</h3>
+        <div class="card-header">
+          <div class="header-title-box">
+            <div class="header-icon-wrapper" style="background-color: rgba(74, 134, 232, 0.1); color: #4a86e8;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <h3 class="h3-title" style="margin: 0;">바로가기</h3>
+          </div>
+        </div>
         <div class="menu-list">
           <div class="menu-item" @click="router.push({ name: 'BankView' })">
             <div class="menu-icon blue"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21v-7"/><path d="M19 21v-7"/><path d="M2 10h20"/><path d="M12 3L2 10v3h20v-3z"/></svg></div>
@@ -320,20 +329,28 @@ const fetchWeather = async () => {
 const newsList = ref([])
 const loadingNews = ref(true)
 
+const lastUpdatedNews = ref('');
+
 const fetchNews = async () => {
   try {
-    const rssUrl = 'https://news.google.com/rss/search?q=금융+경제&hl=ko&gl=KR&ceid=KR:ko'
-    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`
-    const res = await axios.get(apiUrl)
+    loadingNews.value = true;
+    const rssUrl = 'https://news.google.com/rss/search?q=금융+경제&hl=ko&gl=KR&ceid=KR:ko';
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+    const res = await axios.get(apiUrl);
+    
     if (res.data.items) {
-      newsList.value = res.data.items.slice(0, 5)
+      newsList.value = res.data.items.slice(0, 5);
+      // 마지막 업데이트 시간 기록
+      const now = new Date();
+      lastUpdatedNews.value = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
     }
   } catch (e) {
-    console.error(e)
+    console.error(e);
   } finally {
-    loadingNews.value = false
+    loadingNews.value = false;
   }
 }
+
 const timeAgo = (dateStr) => {
   const diff = new Date() - new Date(dateStr)
   const m = Math.floor(diff / 60000)
@@ -355,7 +372,19 @@ const myRealProducts = computed(() => {
 // ----------------------------------------------------
 const typeValue = ref(''); const typeStatus = ref(false)
 const typeArray = ['적금 들걸...', '투자 할걸...', '공부 할걸...', '삼사라 할걸...']
-const todayTip = "신용카드는 한도의 50% 이하로 사용할 때 신용점수에 가장 좋습니다."
+const tips = [
+  "신용카드는 한도의 50% 이하로 사용할 때 신용점수 관리에 가장 유리합니다.",
+  "월급의 10%는 무조건 비상금 통장에 먼저 이체하는 습관을 가져보세요.",
+  "신용점수를 올리고 싶다면 체크카드와 신용카드를 7:3 비율로 섞어 써보세요.",
+  "복리의 마법을 누리려면 하루라도 빨리 저축과 투자를 시작하는 것이 좋습니다.",
+  "통신비나 공공요금 납부 내역을 신용평가사에 제출하면 신용점수가 올라갑니다.",
+  "연말정산 세액공제를 위해 IRP나 연금저축 계좌를 활용하는 것을 잊지 마세요.",
+  "고정 지출 중 사용하지 않는 구독 서비스만 정리해도 매달 커피 몇 잔 값을 아낍니다.",
+  "대출을 갚을 때는 금리가 가장 높은 대출부터 먼저 상환하는 것이 경제적입니다.",
+  "CMA 통장은 하루만 맡겨도 이자가 붙어 비상금 통장으로 활용하기 좋습니다.",
+  "주거래 은행만 고집하기보다 금리 비교 사이트를 통해 가장 유리한 상품을 찾으세요."
+];
+const todayTip = tips[Math.floor(Math.random() * tips.length)];
 let timer = null; let typeIdx = 0; let charIdx = 0
 
 const typeText = () => {
@@ -381,16 +410,36 @@ const eraseText = () => {
   }
 }
 
+// 1. 스크립트 상단에 타이머 변수 선언 (onMounted 밖에서 정의)
+let newsTimer = null; 
+
+// 2. onMounted 수정
 onMounted(() => {
-  updateTime(); fetchWeather(); fetchNews()
-  timer = setInterval(updateTime, 1000)
-  setTimeout(typeText, 1000)
+  // [초기 실행] 페이지 접속 시 즉시 데이터 호출
+  updateTime();
+  fetchWeather();
+  fetchNews();
   
+  // [시계] 1초마다 시간 업데이트
+  timer = setInterval(updateTime, 1000);
+  
+  // [뉴스] 1시간(3,600,000ms)마다 뉴스 새로고침
+  newsTimer = setInterval(fetchNews, 3600000); 
+
+  // [기타 효과] 타이핑 효과 시작
+  setTimeout(typeText, 1000);
+  
+  // [유저 데이터] 로그인 상태라면 상품 정보 로드
   if (store.token) {
-    financeStore.getProducts() 
+    financeStore.getProducts();
   }
-})
-onUnmounted(() => { if(timer) clearInterval(timer) })
+});
+
+// 3. onUnmounted 수정 (모든 타이머 해제)
+onUnmounted(() => {
+  if (timer) clearInterval(timer);
+  if (newsTimer) clearInterval(newsTimer); // 뉴스 타이머도 반드시 해제!
+});
 </script>
 
 <style scoped>
@@ -419,8 +468,11 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   --primary: #60a5fa;
 }
 
+.h3-title {
+  margin-top: 0%;
+}
 .home-container {
-  max-width: 1000px; margin: 0 auto; padding: 40px 20px 80px;
+  max-width: 1000px; margin: 0 auto; padding: 13px 20px 80px;
   font-family: 'Pretendard', sans-serif; color: var(--text-primary);
 }
 
@@ -428,10 +480,21 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 .hero-section { text-align: center; margin-bottom: 50px; }
 .main-title { font-size: 2.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
 .highlight { color: var(--primary); }
-.cursor { border-right: 3px solid var(--text-primary); animation: blink 1s infinite; }
+.cursor {
+  display: inline-block;
+  vertical-align: middle; /* 글자 높이 중앙에 맞춤 */
+  width: 0;               /* 너비를 0으로 해서 배경색 블럭 방지 */
+  height: 1.2em;          /* 커서 길이를 글자보다 살짝 길게 */
+  border-right: 2px solid #3182f6; /* 배경 대신 테두리(선)만 사용 */
+  margin-left: 2px;       /* 글자와의 간격 */
+  animation: blink 1s step-end infinite; /* 깜빡임을 더 깔끔하게(step-end) */
+}
 .cursor.typing { animation: none; }
 .sub-title { font-size: 1.1rem; color: var(--text-secondary); opacity: 0.8; }
-
+/* 다크모드: 선 색상만 살짝 밝게 */
+[data-theme="dark"] .cursor {
+  border-right-color: #4a94ff;
+}
 /* Dashboard Grid */
 .dashboard-grid {
   display: grid;
@@ -451,13 +514,29 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   display: flex; flex-direction: column;
 }
 .card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08); }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 제목은 왼쪽, 뱃지는 오른쪽 */
+  padding-bottom: 12px;
+}
 .card-header h3 { font-size: 1.1rem; font-weight: 700; margin: 0; }
 .header-title-box { display: flex; align-items: center; gap: 8px; }
 .header-icon { color: var(--text-secondary); }
 
-[data-theme="dark"] .card:hover {
-  background-color: #243047;
+/* 1. 다크모드일 때 호버 효과를 배경색과 똑같이 맞춤 (파란색 제거) */
+[data-theme="dark"] .card:hover, 
+[data-theme="dark"] .feature-card:hover {
+  background-color: var(--bg-card) !important; /* 파란색 대신 원래 카드 배경색 유지 */
+  border-color: var(--border-color) !important; /* 테두리 파란색 방지 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important; /* 파란 그림자 대신 어두운 그림자 */
+  transform: translateY(-5px); /* 움직임은 유지하고 싶다면 남겨두고, 싫으면 none으로 변경 */
+}
+
+/* 2. 만약 텍스트도 파란색으로 변한다면 */
+[data-theme="dark"] .card:hover h3,
+[data-theme="dark"] .card:hover p {
+  color: var(--text-primary) !important;
 }
 
 [data-theme="dark"] .menu-item:hover,
@@ -493,6 +572,28 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 [data-theme="dark"] .blur-content {
   background: rgba(15, 23, 42, 0.7);
   color: var(--text-primary);
+}
+
+/* 다크모드에서 .blur-content 호버 시 파란색 반응 제거 */
+[data-theme="dark"] .blur-content:hover {
+  /* 1. 배경색을 파란색 대신 투명하거나 어두운 배경으로 고정 */
+  background-color: rgba(255, 255, 255, 0.05) !important; 
+  
+  /* 2. 테두리에 파란색이 있다면 기본 테두리 색상으로 유지 */
+  border-color: var(--border-color) !important;
+  
+  /* 3. 파란색 글로우(그림자) 효과 제거 */
+  box-shadow: none !important;
+  
+  /* 4. 내부 글자색이 파란색으로 변하는 경우 방지 */
+  color: var(--text-primary) !important;
+}
+
+/* 만약 가상 요소(::before, ::after)로 파란빛을 내고 있다면 이것도 초기화 */
+[data-theme="dark"] .blur-content:hover::before,
+[data-theme="dark"] .blur-content:hover::after {
+  background: none !important;
+  display: none;
 }
 
 /* 🌙 Dark Mode - Welcome Text */
@@ -651,7 +752,10 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 /* Logged In Style */
 .avatar-circle { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #eff6ff; color: var(--primary); margin-bottom: 10px; }
 .welcome-text { margin: 0; font-size: 1.4rem; font-weight: 800; line-height: 1.4; color: var(--text-primary); }
-.highlight-name { color: var(--primary); }
+.highlight { 
+  color: #3182F6 !important; /* var(--primary) 대신 직접 지정하거나 변수 확인 */
+  font-weight: 700; 
+}
 .sub-text { margin: 4px 0 0; font-size: 0.95rem; color: var(--text-muted); }
 /* 1. 버튼들을 감싸는 영역: 중앙 정렬 및 간격 */
 .profile-actions {
@@ -694,7 +798,12 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   color: #8b95a1;           /* 이미지 속 연한 회색 글자 */
   border: 1px solid #f2f4f6; /* 눈에 띄지 않을 정도의 연한 테두리 */
 }
-
+/* ✨ 다크 모드일 때만 색상 조정 */
+[data-theme="dark"] .btn-logout {
+  /* 너무 하얗지 않게 더 어두운 회색으로 변경 */
+  color: #bbbbbb; 
+  background-color: rgba(255, 255, 255, 0.03); /* 아주 살짝 배경을 줌 (선택사항) */
+}
 /* 클릭 효과 */
 .btn-mypage:active {
   background-color: #1b64da;
@@ -710,7 +819,45 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 .login-header h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
 .login-header p { font-size: 0.9rem; color: var(--text-muted); margin: 0 0 20px 0; }
 .login-form { width: 100%; display: flex; flex-direction: column; gap: 12px; position: relative; }
-.login-input { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 0.95rem; outline: none; transition: all 0.2s; box-sizing: border-box; background: #f9fafb; }
+/* [라이트/공통] 입력창 기본 스타일 */
+.login-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* [다크 모드 전용] 입력창 색상 상세 조정 */
+[data-theme="dark"] .login-input {
+  /* 배경을 카드 색상보다 약간 더 어둡게 하여 깊이감 부여 */
+  background-color: rgba(255, 255, 255, 0.05); 
+  border-color: #3f3f46; /* 진한 회색 테두리 */
+  color: #e5e7eb;
+}
+
+/* 플레이스홀더(힌트 텍스트) 색상 */
+.login-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* [포커스 상태] 클릭 시 강조 효과 */
+.login-input:focus {
+  outline: none;
+  border-color: #3b82f6; /* 파란색 포인트 */
+  background-color: var(--bg-card); /* 포커스 시 배경을 살짝 밝게 */
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+[data-theme="dark"] .login-input:focus {
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+}
 .login-input:focus { border-color: var(--primary); background: #fff; }
 
 .btn-login-action { 
@@ -771,16 +918,6 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   color: #6b7280;
 }
 
-.btn-logout {
-  font-size: 0.8rem;
-  color: #9ca3af;
-  background: none;
-  border: 1px solid #f3f4f6;
-  padding: 5px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
 .btn-login-action:hover { background: #2563eb; }
 .login-footer { margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); }
 .link-text { color: var(--primary); font-weight: 600; cursor: pointer; margin-left: 6px; }
@@ -815,31 +952,109 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 /* 4. Subscription Card */
 .subscription-card { grid-column: span 2; min-height: 240px; }
 /* 카드 기본 설정 */
-/* 1. 부모 카드: 하단 패딩을 거의 없애서 리스트가 아래까지 내려오게 함 */
 .subscription-card {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 24px 24px 0px 24px; /* 하단(bottom) 패ding을 10px로 최소화 */
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid #f2f4f6;
+  padding: 24px 20px 0 20px !important; /* 아래쪽(bottom) 패딩을 0으로 완전히 제거 */
   display: flex;
   flex-direction: column;
-  gap: 16px;            /* 헤더와 리스트 사이 간격을 좁혀서 공간 확보 */
-  overflow: hidden; 
-  min-height: 250px;    /* 카드 자체의 최소 높이를 키워서 시원하게 만듦 */
+  min-height: 350px; /* 카드의 최소 높이를 확보 */
+  justify-content: flex-start;
 }
 
-/* 2. 스크롤 영역: max-height를 대폭 늘려 세로로 길게 확장 */
+/* 1. 스크롤 영역: 아이템 5개 높이와 간격을 정확히 합산 */
 .product-scroll-area {
-  /* 150px -> 380px로 확장 (더 많은 아이템이 한 번에 보임) */
-  max-height: 380px;    
+  flex: 1;
+  
+  /* 계산식: (아이템 64px + 간격 8px) * 5개 - 마지막 간격 8px = 352px */
+  /* 만약 5번째가 여전히 미세하게 가려지면 355px 정도로 살짝 늘려주세요. */
+  max-height: 352px !important; 
+  
   overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 8px;
+  
+  /* 리스트 맨 아래 여백을 줘서 마지막 아이템 하단 곡선이 잘 보이지 않게 방지 */
+  padding-bottom: 4px; 
+}
+
+/* 2. 개별 아이템: 높이를 64px로 딱 고정 (가장 보기 좋은 크기) */
+.preview-item {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-right: 6px;   /* 스크롤바와 아이템 사이 간격 */
-  padding-bottom: 15px; /* 리스트 맨 끝 아이템이 잘려 보이지 않게 여유분 */
+  justify-content: space-between;
+  align-items: center;
+  
+  /* 높이 고정 */
+  height: 64px; 
+  min-height: 64px;
+  
+  padding: 0 16px; /* 위아래 패딩은 height가 결정하므로 0으로 둠 */
+  background-color: #f9fafb;
+  border-radius: 16px;
+  margin-bottom: 4px; /* 아이템 사이 간격 */
+  
+  flex-shrink: 0; /* 중요: 아이템이 눌리지 않게 함 */
+  box-sizing: border-box;
+}
+
+.preview-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 3. 스크롤바 최적화 (5개까지는 안 보이다가 6개부터 등장) */
+.product-scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+
+.product-scroll-area::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+/* 마우스를 올렸을 때만 스크롤바가 보이게 해서 디자인 유지 */
+.product-scroll-area:hover::-webkit-scrollbar-thumb {
+  background-color: #e5e8eb;
+  border-radius: 10px;
+}
+
+/* 다크모드 대응 */
+[data-theme="dark"] .preview-item {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* 4. 카드 하단에 부드러운 그라데이션 (선택 사항) */
+/* 리스트가 잘리는 느낌이 들면 카드 바닥에 살짝 흰색/검은색 투명 처리를 합니다 */
+.subscription-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to top, var(--bg-card), transparent);
+  pointer-events: none; /* 클릭 방해 금지 */
+  border-radius: 0 0 24px 24px;
+}
+
+/* 2. 스크롤바가 실제 나타날 때만 패딩을 살짝 주어 공간 확보 */
+.product-scroll-area:hover {
+  padding-right: 4px;
+}
+
+/* 3. 스크롤바 디자인 (평소엔 투명하다가 호버 시에만 살짝 보이게) */
+.product-scroll-area::-webkit-scrollbar {
+  width: 4px; /* 스크롤바 두께 */
+}
+
+.product-scroll-area::-webkit-scrollbar-thumb {
+  background-color: transparent; /* 평소엔 안 보임 */
+  border-radius: 10px;
+}
+
+.product-scroll-area:hover::-webkit-scrollbar-thumb {
+  background-color: #e5e8eb; /* 마우스 올렸을 때만 연한 회색으로 표시 */
+}
+
+/* 다크모드 대응 스크롤바 */
+[data-theme="dark"] .product-scroll-area:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* 3. 리스트 아이템: 높이감을 주어 가독성 향상 */
@@ -871,12 +1086,6 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
 /* 스크롤바가 너무 굵으면 가려지는 느낌이 드니 얇게 조정 */
 .product-scroll-area::-webkit-scrollbar {
   width: 4px;
-}
-
-.subscription-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
-  background-color: #fafafa;
 }
 
 /* 헤더 섹션 */
@@ -925,14 +1134,36 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   margin: 0;
 }
 
-/* 숫자 뱃지 */
+/* 2. 뱃지 스타일 수정 */
 .count-badge {
-  background: #f2f4f6;
-  color: #3182f6;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 14px;
+  background-color: #4a86e8 !important; /* 항상 선명한 파란색 유지 */
+  color: #ffffff !important;           /* 글자색은 항상 흰색 */
+  
+  /* 디자인을 위한 기본 스타일 (필요시 조정) */
+  font-size: 0.75rem;
   font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  box-shadow: 0 2px 5px rgba(74, 134, 232, 0.3);
+}
+
+/* 3. 제목 박스와의 간격 (혹시 제목 바로 옆에 붙이고 싶다면) */
+.header-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 2. 다크모드에서 색상이 변하는 것을 방지 */
+[data-theme="dark"] .count-badge {
+  background-color: #4a86e8 !important; /* 다크모드에서도 파란색 고정 */
+  color: #ffffff !important;           /* 다크모드에서도 흰색 고정 */
+  border: none !important;             /* 혹시 생길 수 있는 테두리 제거 */
 }
 
 /* 바디 섹션 - 상태 메시지 */
@@ -1044,27 +1275,16 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   opacity: 0.2; /* 더 연하게 처리해서 거슬림 방지 */
 }
 
-/* [1] 구독 상품 카드 - 테두리 제거 및 호버 효과 수정 */
-.subscription-card {
-  position: relative;
-  background-color: var(--bg-card);
-  /* 테두리 아예 제거 */
-  border: none !important; 
-  border-radius: 24px;
-  padding: 24px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  /* 선 대신 부드러운 그림자로 카드 구분 */
-  box-shadow: 0 4px 12px var(--shadow-color);
-}
-
-/* 마우스 올릴 때: 테두리 없이 배경색만 파랗게 */
 .subscription-card:hover {
-  transform: translateY(-4px);
-  /* 테두리 변경 코드 삭제 */
-  background-color: rgba(49, 130, 246, 0.06); 
-  box-shadow: 0 12px 24px var(--shadow-color);
+  /* 배경색과 테두리를 원래 상태로 강제 고정 */
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  
+  /* 파란색 그림자(Glow) 효과 제거 (일반적인 그림자로 변경하거나 제거) */
+  box-shadow: 0 8px 30px var(--shadow-color) !important; 
+  
+  /* 만약 카드가 위로 들리는게 싫다면 transform도 none으로 설정 가능 */
+  /* transform: none !important; */
 }
 
 /* 다크모드 호버 시 */
@@ -1107,15 +1327,27 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   background: rgba(30, 30, 30, 0.7);
 }
 
-/* 카드 호버 시 블러 레이어도 푸른빛 가미 */
-.subscription-card:hover .blur-content {
-  background: rgba(49, 130, 246, 0.08);
-}
-
 [data-theme="dark"] .subscription-card:hover .blur-content {
   background: rgba(30, 38, 52, 0.8);
 }
+/* 2. 카드 호버 시 내부 .blur-content가 파란색으로 변하는 것 방지 */
+.subscription-card:hover .blur-content {
+  background-color: transparent !important; /* 배경색 변화 제거 */
+  color: var(--text-primary) !important;    /* 글자색 유지 */
+}
 
+/* 3. 다크모드에서 가상 요소(::before 등)로 파란 빛을 내는 경우 방어 */
+[data-theme="dark"] .subscription-card:hover::before,
+[data-theme="dark"] .subscription-card:hover::after {
+  display: none !important;
+}
+
+/* 4. 내부의 아이콘이나 강조 텍스트가 파란색으로 변할 경우 */
+.subscription-card:hover .highlight,
+.subscription-card:hover i,
+.subscription-card:hover span {
+  color: inherit !important;
+}
 /* 잠금 아이콘 박스 - 여기도 테두리 제거 */
 .lock-icon-box {
   width: 50px;
@@ -1166,7 +1398,9 @@ onUnmounted(() => { if(timer) clearInterval(timer) })
   color: inherit;
   text-decoration: none;
 }
-
+[data-theme="dark"] .h3-title {
+  color: var(--text-primary) !important;
+}
 .news-item:hover {
   transform: translateY(-2px);
   background-color: var(--bg-hover);
