@@ -170,3 +170,5 @@ ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
 EXCHANGE_API_KEY = os.getenv('EXCHANGE_API_KEY')
 # FINANCE_API_KEY = os.getenv('FINANCE_API_KEY')
 OPENAI_API_KEY= os.getenv('OPENAI_API_KEY')
+VITE_KAKAO_JS_KEY = os.getenv('VITE_KAKAO_JS_KEY')
+VITE_KAKAO_REST_KEY= os.getenv('VITE_KAKAO_REST_KEY')

@@ -221,7 +221,7 @@ onMounted(async () => {
       
       if (userInfo.value.is_mydata_agreed) {
         // [True] 동의 상태: 바로 맞춤 추천 시작 멘트
-        welcomeMsg = `안녕하세요 ${userInfo.value.nickname}님! \n\n마이데이터 연동이 확인되었습니다. 🙆🏻‍♂️\n**${userInfo.value.mbti || '고객'}**님의 투자 성향과 자산 정보를 바탕으로, 딱 맞는 예적금/펀드 상품을 바로 추천해드릴 수 있어요.\n\n무엇을 찾아드릴까요?`
+        welcomeMsg = `안녕하세요 ${userInfo.value.nickname}님! \n\n마이데이터 연동이 확인되었습니다. 고객님의 투자 성향과 자산 정보를 바탕으로, 딱 맞는 예적금/펀드 상품을 바로 추천해드릴 수 있어요.\n\n무엇을 찾아드릴까요?`
       } else {
         // [False] 미동의 상태: 동의 권유 멘트
         welcomeMsg = `안녕하세요 ${userInfo.value.nickname}님! FinBot입니다. 🤖\n\n현재 **마이데이터 미동의** 상태라 일반적인 인기 상품 위주로만 추천해드릴 수 있어요.\n\n더 정확한 맞춤 추천과 수익률 계산을 원하시면 마이데이터 제공에 동의해주세요.`
@@ -352,6 +352,7 @@ const shouldShowDate = (idx) => idx === 0 || new Date(messages.value[idx].create
   font-weight: 500;
   text-align: right;
   line-height: 1.2;
+  padding: 10px 0px 5px;
 }
 
 /* ----------------------------------------------------
@@ -415,7 +416,7 @@ const shouldShowDate = (idx) => idx === 0 || new Date(messages.value[idx].create
    Input Area
 ---------------------------------------------------- */
 .input-area {
-  padding: 10px 16px 20px 16px;
+  padding: 10px 16px 10px 16px;
   background-color: #F2F2F7;
   border-top: 1px solid rgba(0,0,0,0.1);
   flex-shrink: 0;
@@ -543,7 +544,7 @@ input {
 .ios-frame.dark .back-btn { color: #0A84FF; }
 
 /* Chat Area */
-.ios-frame.dark .chat-container { background-color: #000000; }
+.ios-frame.dark .chat-container { background-color: #131313; }
 .ios-frame.dark .message-row.ai .message-bubble { background-color: #262628; color: #FFF; }
 .ios-frame.dark .message-row.user .message-bubble { background-color: #0A84FF; }
 .ios-frame.dark .date-divider { background-color: rgba(255,255,255,0.15); color: #AEAEB2; }

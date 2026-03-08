@@ -58,16 +58,36 @@
       <p class="result-desc">{{ result.desc }}</p>
 
       <div class="recommend-box">
-        <h3>💡 FinBot의 제안</h3>
+        <h3>FinBot의 제안</h3>
         <p>{{ result.advice }}</p>
       </div>
 
       <div class="action-buttons">
-        <button class="primary-btn" @click="handleResultAction">
-          {{ store.token ? '결과 저장하고 AI 비서와 상담하기 🤖' : '나에게 딱 맞는 상품 추천받기 (가입) 🎁' }}
-        </button>
         
-        <button class="retry-btn" @click="resetTest">다시 하기</button>
+        <button class="primary-btn" @click="handleResultAction">
+          {{ store.token ? '🤖 AI 비서에게 결과 저장하기' : '📋 회원가입하고 맞춤 상품 추천받기' }}
+        </button>
+
+        <div v-if="!store.token" class="easy-login-row">
+          <span class="easy-text">또는 카카오로 간편하게 👉</span>
+          <div class="kakao-wrapper-mini">
+            <KakaoLogin type="icon"/>
+          </div>
+        </div>
+
+        <hr class="divider-line" />
+
+        <div class="sub-actions">
+          <button class="kakao-share-btn" @click="shareToKakao">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C5.9 3 1 6.9 1 11.8c0 3.1 2 5.9 5 7.5-.2.8-1 2.9-1.1 3.2-.2.4.1.6.4.4.2-.1 3.2-2.2 4.4-3 .7.1 1.4.2 2.2.2 6.1 0 11-3.9 11-8.8C23 6.9 18.1 3 12 3z"/></svg>
+            공유하기
+          </button>
+
+          <button class="retry-btn" @click="resetTest">
+            다시 하기 🔄
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -79,6 +99,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth' // 스토어 임포트
+import KakaoLogin from '@/components/KakaoLogin.vue'
 
 const router = useRouter()
 const store = useAuthStore() // 로그인 상태 확인용
@@ -149,6 +170,35 @@ const handleResultAction = async () => {
     router.push({ name: 'signup', query: { mbti: result.value.type } })
   }
 }
+const shareToKakao = () => {
+  if (!window.Kakao || !window.Kakao.isInitialized()) {
+    alert('카카오 SDK 로딩 중입니다. 잠시 후 다시 시도해주세요.')
+    return
+  }
+
+  window.Kakao.Share.sendDefault({
+    objectType: 'feed',
+    content: {
+      title: `나의 금융 성향은 '${result.value.title}' ${result.value.icon}`,
+      description: result.value.desc,
+      imageUrl: 'https://cdn-icons-png.flaticon.com/512/5501/5501360.png', // ⚠️ 여기에 멋진 대표 이미지 주소를 넣으면 더 좋습니다!
+      link: {
+        mobileWebUrl: window.location.href,
+        webUrl: window.location.href,
+      },
+    },
+    buttons: [
+      {
+        title: '나도 테스트 하러가기',
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+    ],
+  })
+}
+
 </script>
 
 <style scoped>
@@ -273,24 +323,63 @@ const handleResultAction = async () => {
 /* =====================
   6. 하단 액션 버튼
 ===================== */
-.start-btn { width: 100%; padding: 16px; font-size: 1.2rem; font-weight: 700; background: #3b82f6; color: white; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
-.start-btn:hover { background: #2563eb; }
+/* =====================
+  6. 하단 액션 버튼 (토스 블루 적용)
+===================== */
+.start-btn { 
+  width: 100%; 
+  padding: 16px; 
+  font-size: 1.2rem; 
+  font-weight: 700; 
+  background: #3182f6; /* 토스 공식 블루 */
+  color: white; 
+  border: none; 
+  border-radius: 12px; 
+  cursor: pointer; 
+  transition: background 0.2s; 
+}
+.start-btn:hover { background: #1b64da; }
 
+/* 초록색이었던 부분 -> 토스 블루로 변경 */
 .primary-btn { 
   width: 100%; 
   padding: 16px; 
   font-size: 1.1rem; 
   font-weight: 700; 
-  background: #10b981; 
+  background: #3182f6; /* #10b981(초록)에서 변경 */
   color: white; 
   border: none; 
   border-radius: 12px; 
   cursor: pointer; 
   margin-bottom: 10px; 
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); 
+  /* 그림자 색상도 블루 톤으로 변경 */
+  box-shadow: 0 4px 12px rgba(49, 130, 246, 0.3); 
+  transition: all 0.2s ease;
 }
-.primary-btn:hover { background: #059669; }
 
+.primary-btn:hover { 
+  background: #1b64da; /* #059669(진한초록)에서 변경 */
+  transform: translateY(-1px);
+}
+
+/* 결과 제목 색상 강조 */
+.result-title { 
+  font-size: 2rem; 
+  font-weight: 900; 
+  color: #3182f6; /* 조금 더 쨍한 토스 블루 */
+  margin-bottom: 20px; 
+}
+
+/* 선택지 버튼 호버 색상 통일 */
+.choice-btn:hover { 
+  border-color: #3182f6; 
+  background: var(--bg-badge); 
+  color: #3182f6; 
+}
+.choice-btn:hover .label { background: #3182f6; color: white; }
+
+/* 진행바 색상 */
+.fill { height: 100%; background: #3182f6; transition: width 0.3s ease; }
 .retry-btn { 
   width: 100%; 
   padding: 14px; 
@@ -342,5 +431,77 @@ const handleResultAction = async () => {
   .intro-icon-box svg circle[fill="#F59E0B"] {
     fill: #D97706; /* 코인 색상 약간 톤다운 */
   }
+}
+.easy-login-row {
+  display: flex;
+  align-items: center;     /* 수직 중앙 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  gap: 12px;               /* 글자와 버튼 사이 간격 */
+  margin-top: 12px;
+  margin-bottom: 20px;
+  padding: 8px;
+  background-color: var(--bg-body); /* 연한 배경 */
+  border-radius: 12px;
+}
+
+.easy-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* 카카오 버튼 크기 조절용 래퍼 */
+
+
+/* 얇은 구분선 */
+.divider-line {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 20px 0;
+  opacity: 0.5;
+}
+
+/* 3. 하단 버튼 그룹 (공유 | 다시하기) */
+.sub-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* 카카오톡 공유 버튼 */
+.kakao-share-btn {
+  flex: 1; /* 반반 차지 */
+  padding: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: #FEE500;
+  color: #191919;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.kakao-share-btn:hover {
+  background-color: #fdd835;
+  transform: translateY(-2px);
+}
+
+/* 다시하기 버튼 */
+.retry-btn {
+  flex: 1; /* 반반 차지 */
+  padding: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.retry-btn:hover {
+  background: var(--bg-hover);
 }
 </style>

@@ -418,7 +418,7 @@ onMounted(() => {
 .rate-text {
   font-size: 0.95rem;
   color: var(--text-muted);
-  margin: 0 0 0 5px;
+  margin: 20px 10px 0px;
 }
 
 /* =====================

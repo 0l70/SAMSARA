@@ -22,6 +22,7 @@ import ChatView from '@/views/ChatView.vue'
 import SubscriptionListView from '@/views/SubscriptionListView.vue'
 import ProductDetailView from '@/views/ProductDetailView.vue'
 import DepositView from '@/views/DepositView.vue'
+import KakaoCallbackView from '@/views/KakaoCallbackView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -127,7 +128,21 @@ const router = createRouter({
       name: 'chatbot',
       component: ChatView
     },
-  ]
+    {
+      path: '/oauth/callback/kakao', 
+      name: 'kakao-callback',
+      component: KakaoCallbackView
+    },
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    // 사용자가 뒤로가기/앞으로가기를 눌렀을 때는 이전 스크롤 위치를 유지
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      // 새 페이지로 이동할 때는 항상 맨 위로 (x:0, y:0)
+      return { top: 0 }
+    }
+  }
 })
 
 export default router
